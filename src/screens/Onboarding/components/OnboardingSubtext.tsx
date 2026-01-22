@@ -1,5 +1,5 @@
+import { AppText } from "@/src/components/atoms/text";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms";
 
 export interface OnboardingSubtextProps {
   /** Main description text */

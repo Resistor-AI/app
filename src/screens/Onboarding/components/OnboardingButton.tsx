@@ -1,7 +1,8 @@
 import { Pressable, PressableProps } from "react-native";
 import Animated from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms";
+import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
+import { AppText } from "@/src/components/atoms/text";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -32,7 +33,7 @@ export function OnboardingButton({
   label,
   variant = "blue",
   showArrow = true,
-  className = "",
+  className,
   onPress,
   ...rest
 }: OnboardingButtonProps) {
@@ -46,10 +47,17 @@ export function OnboardingButton({
   return (
     <AnimatedPressable
       onPress={handlePress}
-      className={`flex-row items-center justify-center py-5 px-8 rounded-full gap-3 ${bg} ${className}`}
+      className={twMerge(
+        "flex-row items-center justify-center py-5 px-8 rounded-full gap-3",
+        bg,
+        className,
+      )}
       {...rest}
     >
-      <AppText variant="body-lg" className={`font-outfit-semibold ${text}`}>
+      <AppText
+        variant="body-lg"
+        className={twMerge("font-outfit-semibold", text)}
+      >
         {label}
       </AppText>
       {showArrow && (

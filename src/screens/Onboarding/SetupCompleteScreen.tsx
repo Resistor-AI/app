@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { View, Pressable, useWindowDimensions } from "react-native";
-import { AppText } from "@/src/components/atoms";
+
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import Animated, {
@@ -15,6 +15,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import { AppText } from "@/src/components/atoms/text";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

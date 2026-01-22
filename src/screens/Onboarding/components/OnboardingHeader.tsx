@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms";
+import { AppText } from "@/src/components/atoms/text";
+import { twMerge } from "tailwind-merge";
 
 type AccentColor =
   | "textPrimary"
@@ -19,6 +20,8 @@ export interface OnboardingHeaderProps {
   accentColor?: AccentColor;
   /** Animation delay offset in ms */
   animationDelay?: number;
+
+  className?: string;
 }
 
 /**
@@ -29,15 +32,19 @@ export function OnboardingHeader({
   subtitle,
   accentColor = "electricBlue",
   animationDelay = 200,
+  className,
 }: OnboardingHeaderProps) {
   const accentColorClass = `text-${accentColor}`;
 
   return (
-    <View>
+    <View className="gap-4">
       <Animated.View
         entering={FadeInDown.delay(animationDelay).duration(800).springify()}
       >
-        <AppText variant="display" className="leading-tight tracking-tighter">
+        <AppText
+          variant="display"
+          className={twMerge("leading-tight tracking-widest", className)}
+        >
           {title}
         </AppText>
       </Animated.View>

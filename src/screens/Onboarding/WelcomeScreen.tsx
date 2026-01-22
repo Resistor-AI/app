@@ -7,7 +7,8 @@ import Animated, {
   FadeInDown,
   FadeInUp,
 } from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms";
+import { OnboardingHeader, OnboardingSubtext } from "./components";
+import { AppText } from "@/src/components/atoms/text";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -44,28 +45,18 @@ export default function WelcomeScreen() {
         <Animated.View
           entering={FadeInDown.delay(100).duration(800).springify()}
         >
-          <AppText variant="h1" className="text-6xl leading-tight">
-            You Promised Yourself
-          </AppText>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeInDown.delay(300).duration(800).springify()}
-        >
-          <AppText
-            variant="h1"
-            className="text-5xl leading-tight text-blue-500 font-outfit-semibold my-4"
-          >
-            Just 5 minutes.
-          </AppText>
+          <OnboardingHeader
+            title="You promised yourself"
+            subtitle="Just 5 minutes."
+          />
         </Animated.View>
 
         {/* Subtext */}
-        <Animated.View entering={FadeIn.delay(600).duration(600)}>
-          <AppText variant="body-lg" className="leading-relaxed tracking-wide">
-            3 hours later, you hate yourself. The guilt. The wasted potential.
-          </AppText>
-        </Animated.View>
+        {/* <Animated.View entering={FadeIn.delay(600).duration(600)}> */}
+        <OnboardingSubtext>
+          3 hours later, you hate yourself. The guilt. The wasted potential.
+        </OnboardingSubtext>
+        {/* </Animated.View> */}
       </View>
 
       {/* Bottom */}

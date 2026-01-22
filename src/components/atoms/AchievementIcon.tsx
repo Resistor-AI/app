@@ -1,7 +1,6 @@
-import { View } from "react-native";
-import { AppText } from "@/src/components/atoms";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeIn, ZoomIn } from "react-native-reanimated";
+import { AppText } from "./text";
 
 type IconVariant = "red" | "blue" | "purple" | "green" | "orange" | "pink";
 
