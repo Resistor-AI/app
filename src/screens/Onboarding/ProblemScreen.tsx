@@ -18,21 +18,17 @@ import { useEffect } from "react";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Brand Colors from Landing Page
+// Brand Colors
 const COLORS = {
   black: "#080808",
-  offBlack: "#0d0d0d",
-  dark: "#121212",
   gray: "#1a1a1a",
   lightGray: "#2a2a2a",
   blue: "#2a6df5",
   blueLight: "#60a5fa",
   green: "#10b981",
-  greenLight: "#34d399",
   amber: "#f59e0b",
   amberLight: "#fbbf24",
   purple: "#8b5cf6",
-  purpleLight: "#a78bfa",
   textPrimary: "#ffffff",
   textSecondary: "#a1a1aa",
   textMuted: "#71717a",
@@ -76,249 +72,87 @@ export default function ProblemScreen() {
           glowStyle,
           {
             position: "absolute",
-            top: "10%",
-            right: "-20%",
-            width: 400,
-            height: 400,
-            borderRadius: 200,
+            top: "30%",
+            right: "-30%",
+            width: 450,
+            height: 450,
+            borderRadius: 225,
             backgroundColor: COLORS.amber,
           },
         ]}
       />
 
-      {/* Skip Button */}
-      <Animated.View
-        entering={FadeIn.delay(300).duration(500)}
-        style={{
-          position: "absolute",
-          top: 60,
-          right: 24,
-          zIndex: 10,
-        }}
-      >
-        <Pressable
-          onPress={handleSkip}
-          style={{
-            backgroundColor: COLORS.lightGray,
-            paddingHorizontal: 18,
-            paddingVertical: 10,
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.1)",
-          }}
-        >
-          <AppText
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: COLORS.textPrimary,
-            }}
-          >
-            Skip
-          </AppText>
-        </Pressable>
-      </Animated.View>
-
       {/* Main Content */}
       <View
+        className="flex-1 px-4 pb-6 justify-between"
         style={{
-          flex: 1,
-          paddingHorizontal: 28,
-          paddingTop: height * 0.12,
+          paddingTop: height * 0.15,
           paddingBottom: 40,
-          justifyContent: "space-between",
         }}
       >
-        {/* Feature Card */}
-        <Animated.View
-          entering={FadeInDown.delay(400).duration(700)}
-          style={{
-            backgroundColor: COLORS.gray,
-            borderRadius: 28,
-            padding: 24,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.08)",
-            boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
-          }}
-        >
-          {/* Card Header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 18,
-            }}
-          >
-            <View
+        {/* Emotional Text */}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Animated.View entering={FadeInDown.delay(200).duration(800)}>
+            <AppText
               style={{
-                backgroundColor: COLORS.lightGray,
-                paddingHorizontal: 14,
-                paddingVertical: 8,
-                borderRadius: 16,
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.textPrimary,
+                letterSpacing: -1.5,
               }}
             >
-              <AppText
-                style={{
-                  fontSize: 13,
-                  fontWeight: "600",
-                  color: COLORS.textPrimary,
-                }}
-              >
-                Smart Blocking
-              </AppText>
-            </View>
-            <View
+              You're Not{"\n"}Broken.
+            </AppText>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(500).duration(800)}>
+            <AppText
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                backgroundColor: COLORS.lightGray,
-                alignItems: "center",
-                justifyContent: "center",
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.amberLight,
+                letterSpacing: -1.5,
+                marginTop: 8,
               }}
             >
-              <AppText style={{ fontSize: 16, color: COLORS.textSecondary }}>
-                ↗
-              </AppText>
-            </View>
-          </View>
+              You're Just{"\n"}Fighting Alone.
+            </AppText>
+          </Animated.View>
 
-          {/* Card Title */}
-          <AppText
-            style={{
-              fontSize: 26,
-              fontWeight: "600",
-              color: COLORS.textPrimary,
-              lineHeight: 34,
-              marginBottom: 10,
-            }}
-          >
-            Distraction-Free{"\n"}Focus Session
-          </AppText>
-
-          {/* Meta Info */}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 12,
-              marginTop: 16,
-            }}
-          >
-            <View
+          <Animated.View entering={FadeIn.delay(900).duration(600)}>
+            <AppText
               style={{
-                backgroundColor: COLORS.lightGray,
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 12,
+                fontSize: 18,
+                color: COLORS.textSecondary,
+                lineHeight: 28,
+                marginTop: 32,
               }}
             >
-              <AppText style={{ fontSize: 13, color: COLORS.textSecondary }}>
-                25 min
-              </AppText>
-            </View>
-            <View
+              Willpower alone can't fight a{"\n"}billion-dollar attention
+              economy.
+            </AppText>
+          </Animated.View>
+
+          <Animated.View entering={FadeIn.delay(1100).duration(600)}>
+            <AppText
               style={{
-                backgroundColor: COLORS.lightGray,
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 12,
+                fontSize: 20,
+                fontWeight: "600",
+                color: COLORS.textPrimary,
+                lineHeight: 28,
+                marginTop: 16,
               }}
             >
-              <AppText style={{ fontSize: 13, color: COLORS.textSecondary }}>
-                Today
-              </AppText>
-            </View>
-
-            {/* Avatar Stack */}
-            <View style={{ flexDirection: "row", marginLeft: "auto" }}>
-              {["🧠", "⚡", "🎯"].map((emoji, i) => (
-                <View
-                  key={i}
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
-                    backgroundColor:
-                      i === 0
-                        ? COLORS.blue
-                        : i === 1
-                          ? COLORS.amber
-                          : COLORS.purple,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginLeft: i > 0 ? -10 : 0,
-                    borderWidth: 2,
-                    borderColor: COLORS.gray,
-                  }}
-                >
-                  <AppText style={{ fontSize: 14 }}>{emoji}</AppText>
-                </View>
-              ))}
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  backgroundColor: COLORS.lightGray,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginLeft: -10,
-                  borderWidth: 2,
-                  borderColor: COLORS.gray,
-                }}
-              >
-                <AppText style={{ fontSize: 10, color: COLORS.textPrimary }}>
-                  2+
-                </AppText>
-              </View>
-            </View>
-          </View>
-        </Animated.View>
-
-        {/* Text Section */}
-        <Animated.View
-          entering={FadeInUp.delay(600).duration(600)}
-          style={{ gap: 12 }}
-        >
-          <AppText
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              letterSpacing: 4,
-              color: COLORS.amber,
-            }}
-          >
-            THE SHIELD
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 36,
-              fontWeight: "600",
-              lineHeight: 44,
-              color: COLORS.textPrimary,
-              letterSpacing: -0.5,
-            }}
-          >
-            Block Distractions,{"\n"}Find Your{" "}
-            <AppText style={{ color: COLORS.amberLight }}>Flow</AppText>
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 16,
-              color: COLORS.textSecondary,
-              lineHeight: 24,
-            }}
-          >
-            AI-powered app blocking learns your patterns and protects your focus
-            automatically.
-          </AppText>
-        </Animated.View>
+              You need a system that fights back.
+            </AppText>
+          </Animated.View>
+        </View>
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(800).duration(600).springify()}
+          entering={FadeInUp.delay(1300).duration(600).springify()}
           style={{ gap: 20 }}
         >
           {/* Page Dots */}
@@ -343,52 +177,31 @@ export default function ProblemScreen() {
           </View>
 
           {/* CTA Button */}
-          <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-            <AnimatedPressable
-              onPress={handlePress}
+          <AnimatedPressable
+            onPress={handlePress}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: COLORS.amber,
+              paddingVertical: 20,
+              paddingHorizontal: 32,
+              borderRadius: 32,
+              gap: 12,
+            }}
+          >
+            <AppText
               style={{
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: COLORS.amber,
-                paddingVertical: 20,
-                paddingHorizontal: 28,
-                borderRadius: 32,
-                gap: 12,
+                fontSize: 17,
+                fontWeight: "600",
+                color: COLORS.black,
+                letterSpacing: 0.3,
               }}
             >
-              <AppText
-                style={{
-                  fontSize: 17,
-                  fontWeight: "600",
-                  color: COLORS.black,
-                  letterSpacing: 0.3,
-                }}
-              >
-                Continue
-              </AppText>
-              <AppText style={{ fontSize: 18, color: COLORS.black }}>
-                ›››
-              </AppText>
-            </AnimatedPressable>
-
-            {/* Tomato Icon */}
-            <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: COLORS.gray,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
-            >
-              <AppText style={{ fontSize: 24 }}>🍅</AppText>
-            </View>
-          </View>
+              Show Me How
+            </AppText>
+            <AppText style={{ fontSize: 18, color: COLORS.black }}>›››</AppText>
+          </AnimatedPressable>
         </Animated.View>
       </View>
     </View>

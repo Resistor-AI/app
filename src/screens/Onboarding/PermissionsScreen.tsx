@@ -18,40 +18,21 @@ import { useEffect } from "react";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Brand Colors from Landing Page
+// Brand Colors
 const COLORS = {
   black: "#080808",
-  offBlack: "#0d0d0d",
-  dark: "#121212",
   gray: "#1a1a1a",
   lightGray: "#2a2a2a",
   blue: "#2a6df5",
   blueLight: "#60a5fa",
   green: "#10b981",
-  greenLight: "#34d399",
   amber: "#f59e0b",
-  amberLight: "#fbbf24",
   purple: "#8b5cf6",
   purpleLight: "#a78bfa",
   textPrimary: "#ffffff",
   textSecondary: "#a1a1aa",
   textMuted: "#71717a",
 };
-
-const PERMISSIONS = [
-  {
-    icon: "🔔",
-    title: "Notifications",
-    desc: "Get reminders to stay focused",
-    color: COLORS.blue,
-  },
-  {
-    icon: "📱",
-    title: "Usage Access",
-    desc: "Track and block distracting apps",
-    color: COLORS.purple,
-  },
-];
 
 export default function PermissionsScreen() {
   const router = useRouter();
@@ -91,12 +72,12 @@ export default function PermissionsScreen() {
           glowStyle,
           {
             position: "absolute",
-            top: "40%",
-            left: "-20%",
-            width: 350,
-            height: 350,
-            borderRadius: 175,
-            backgroundColor: COLORS.blue,
+            top: "35%",
+            left: "-25%",
+            width: 400,
+            height: 400,
+            borderRadius: 200,
+            backgroundColor: COLORS.purpleLight,
           },
         ]}
       />
@@ -139,128 +120,119 @@ export default function PermissionsScreen() {
         style={{
           flex: 1,
           paddingHorizontal: 28,
-          paddingTop: height * 0.12,
+          paddingTop: height * 0.15,
           paddingBottom: 40,
           justifyContent: "space-between",
         }}
       >
         {/* Header */}
-        <Animated.View
-          entering={FadeInDown.delay(300).duration(600)}
-          style={{ gap: 12 }}
-        >
-          <AppText
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              letterSpacing: 4,
-              color: COLORS.blueLight,
-            }}
-          >
-            PERMISSIONS
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 34,
-              fontWeight: "600",
-              lineHeight: 42,
-              color: COLORS.textPrimary,
-              letterSpacing: -0.5,
-            }}
-          >
-            Stay Motivated{"\n"}& On{" "}
-            <AppText style={{ color: COLORS.blueLight }}>Track</AppText>
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 16,
-              color: COLORS.textSecondary,
-              lineHeight: 24,
-            }}
-          >
-            Enable permissions to let Resistor guard your focus automatically.
-          </AppText>
-        </Animated.View>
-
-        {/* Permission Cards */}
-        <View style={{ gap: 16 }}>
-          {PERMISSIONS.map((perm, index) => (
-            <Animated.View
-              key={index}
-              entering={FadeInUp.delay(500 + index * 150).duration(600)}
-              style={{
-                backgroundColor: COLORS.gray,
-                borderRadius: 24,
-                padding: 24,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 18,
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.06)",
-              }}
-            >
-              <View
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 18,
-                  backgroundColor: perm.color,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <AppText style={{ fontSize: 28 }}>{perm.icon}</AppText>
-              </View>
-              <View style={{ flex: 1 }}>
-                <AppText
-                  style={{
-                    fontSize: 17,
-                    fontWeight: "600",
-                    color: COLORS.textPrimary,
-                    marginBottom: 4,
-                  }}
-                >
-                  {perm.title}
-                </AppText>
-                <AppText
-                  style={{
-                    fontSize: 14,
-                    color: COLORS.textSecondary,
-                    lineHeight: 20,
-                  }}
-                >
-                  {perm.desc}
-                </AppText>
-              </View>
-            </Animated.View>
-          ))}
-
-          {/* Trust Badge */}
-          <Animated.View
-            entering={FadeIn.delay(900).duration(500)}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              paddingTop: 16,
-            }}
-          >
-            <AppText style={{ fontSize: 18 }}>🔐</AppText>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Animated.View entering={FadeInDown.delay(200).duration(800)}>
             <AppText
               style={{
-                fontSize: 13,
-                color: COLORS.textMuted,
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.textPrimary,
+                letterSpacing: -1.5,
               }}
             >
-              Your data stays private and secure
+              Imagine
             </AppText>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(400).duration(800)}>
+            <AppText
+              style={{
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.purpleLight,
+                letterSpacing: -1.5,
+              }}
+            >
+              Finishing What{"\n"}You Started.
+            </AppText>
+          </Animated.View>
+
+          <Animated.View entering={FadeIn.delay(800).duration(600)}>
+            <AppText
+              style={{
+                fontSize: 18,
+                color: COLORS.textSecondary,
+                lineHeight: 28,
+                marginTop: 32,
+              }}
+            >
+              Imagine ending the day proud,{"\n"}not exhausted.
+            </AppText>
+          </Animated.View>
+
+          {/* Permission Cards */}
+          <Animated.View
+            entering={FadeInUp.delay(1000).duration(600)}
+            style={{ marginTop: 32, gap: 12 }}
+          >
+            {[
+              {
+                icon: "🔔",
+                title: "Notifications",
+                desc: "Gentle focus reminders",
+              },
+              { icon: "📱", title: "Usage Access", desc: "Smart app blocking" },
+            ].map((perm, i) => (
+              <View
+                key={i}
+                style={{
+                  backgroundColor: COLORS.gray,
+                  borderRadius: 20,
+                  padding: 16,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 14,
+                  borderWidth: 1,
+                  borderColor: "rgba(255,255,255,0.06)",
+                }}
+              >
+                <View
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 14,
+                    backgroundColor: COLORS.purple,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <AppText style={{ fontSize: 22 }}>{perm.icon}</AppText>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <AppText
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      color: COLORS.textPrimary,
+                    }}
+                  >
+                    {perm.title}
+                  </AppText>
+                  <AppText
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.textSecondary,
+                    }}
+                  >
+                    {perm.desc}
+                  </AppText>
+                </View>
+              </View>
+            ))}
           </Animated.View>
         </View>
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1000).duration(600).springify()}
+          entering={FadeInUp.delay(1200).duration(600).springify()}
           style={{ gap: 16 }}
         >
           {/* Page Dots */}
@@ -278,7 +250,7 @@ export default function PermissionsScreen() {
                   width: i === 3 ? 24 : 8,
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor: i === 3 ? COLORS.blue : COLORS.lightGray,
+                  backgroundColor: i === 3 ? COLORS.purple : COLORS.lightGray,
                 }}
               />
             ))}
@@ -291,7 +263,7 @@ export default function PermissionsScreen() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: COLORS.blue,
+              backgroundColor: COLORS.purple,
               paddingVertical: 20,
               paddingHorizontal: 32,
               borderRadius: 32,
@@ -321,7 +293,7 @@ export default function PermissionsScreen() {
                 fontWeight: "500",
               }}
             >
-              Maybe later
+              Not now
             </AppText>
           </Pressable>
         </Animated.View>

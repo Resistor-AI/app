@@ -8,12 +8,18 @@ module.exports = {
       fontFamily: {
         sans: ["Inter_400Regular", "System"],
         medium: ["Inter_500Medium", "System"],
+        semibold: ["Inter_600SemiBold", "System"],
         bold: ["Inter_700Bold", "System"],
         mono: ["JetBrainsMono_400Regular", "monospace"],
+        outfit: ["Outfit_400Regular", "System"],
+        "outfit-medium": ["Outfit_500Medium", "System"],
+        "outfit-semibold": ["Outfit_600SemiBold", "System"],
+        "outfit-bold": ["Outfit_700Bold", "System"],
+        "outfit-extrabold": ["Outfit_800ExtraBold", "System"],
       },
       letterSpacing: {
-        tighter: "-0.8px", // Use for H1 "Reclaim Your Brain"
-        tight: "-0.4px", // Use for H2/H3
+        tighter: "-0.8px",
+        tight: "-0.4px",
       },
       colors: {
         // THE VOID (Backgrounds)

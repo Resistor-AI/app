@@ -18,11 +18,9 @@ import { useEffect } from "react";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Brand Colors from Landing Page
+// Brand Colors
 const COLORS = {
   black: "#080808",
-  offBlack: "#0d0d0d",
-  dark: "#121212",
   gray: "#1a1a1a",
   lightGray: "#2a2a2a",
   blue: "#2a6df5",
@@ -30,9 +28,7 @@ const COLORS = {
   green: "#10b981",
   greenLight: "#34d399",
   amber: "#f59e0b",
-  amberLight: "#fbbf24",
   purple: "#8b5cf6",
-  purpleLight: "#a78bfa",
   textPrimary: "#ffffff",
   textSecondary: "#a1a1aa",
   textMuted: "#71717a",
@@ -42,14 +38,13 @@ export default function SetupCompleteScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
 
-  // Celebration animations
   const sparkleScale = useSharedValue(1);
   const glowOpacity = useSharedValue(0.15);
 
   useEffect(() => {
     sparkleScale.value = withRepeat(
       withSequence(
-        withTiming(1.1, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1.08, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
         withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
       ),
       -1,
@@ -89,7 +84,7 @@ export default function SetupCompleteScreen() {
           glowStyle,
           {
             position: "absolute",
-            top: "15%",
+            top: "20%",
             left: "-20%",
             width: 400,
             height: 400,
@@ -103,8 +98,8 @@ export default function SetupCompleteScreen() {
           glowStyle,
           {
             position: "absolute",
-            bottom: "30%",
-            right: "-30%",
+            bottom: "25%",
+            right: "-25%",
             width: 350,
             height: 350,
             borderRadius: 175,
@@ -118,109 +113,84 @@ export default function SetupCompleteScreen() {
         style={{
           flex: 1,
           paddingHorizontal: 28,
-          paddingTop: height * 0.12,
+          paddingTop: height * 0.15,
           paddingBottom: 40,
           justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
-        {/* Celebration Icon */}
+        {/* Hero Section */}
         <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          {/* Background Ring */}
+          {/* Success Icon */}
           <Animated.View
             entering={ZoomIn.delay(200).duration(600)}
             style={[
               sparkleStyle,
               {
-                width: 180,
-                height: 180,
-                borderRadius: 90,
-                backgroundColor: COLORS.gray,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.1)",
-                boxShadow: `0 20px 60px ${COLORS.green}40`,
-              },
-            ]}
-          >
-            <View
-              style={{
-                width: 120,
-                height: 120,
-                borderRadius: 60,
+                width: 140,
+                height: 140,
+                borderRadius: 70,
                 backgroundColor: COLORS.green,
                 alignItems: "center",
                 justifyContent: "center",
-              }}
-            >
-              <AppText style={{ fontSize: 60 }}>✓</AppText>
-            </View>
+                marginBottom: 40,
+              },
+            ]}
+          >
+            <AppText style={{ fontSize: 60, color: "#fff" }}>✓</AppText>
           </Animated.View>
 
-          {/* Floating Celebratory Icons */}
-          {[
-            { emoji: "🎉", top: 60, left: 50 },
-            { emoji: "⭐", top: 80, right: 50 },
-            { emoji: "🚀", bottom: 100, left: 60 },
-          ].map((item, i) => (
-            <Animated.View
-              key={i}
-              entering={FadeIn.delay(600 + i * 150)
-                .duration(500)
-                .springify()}
+          <Animated.View entering={FadeIn.delay(500).duration(800)}>
+            <AppText
               style={{
-                position: "absolute",
-                ...item,
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.textPrimary,
+                textAlign: "center",
+                letterSpacing: -1.5,
               }}
             >
-              <AppText style={{ fontSize: 28 }}>{item.emoji}</AppText>
-            </Animated.View>
-          ))}
-        </View>
+              That Version
+            </AppText>
+          </Animated.View>
 
-        {/* Text Section */}
-        <Animated.View
-          entering={FadeInUp.delay(800).duration(600)}
-          style={{ alignItems: "center", gap: 12, marginBottom: 40 }}
-        >
-          <AppText
-            style={{
-              fontSize: 40,
-              fontWeight: "700",
-              lineHeight: 48,
-              color: COLORS.textPrimary,
-              textAlign: "center",
-              letterSpacing: -0.5,
-            }}
-          >
-            You're All{" "}
-            <AppText style={{ color: COLORS.greenLight }}>Set!</AppText>
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 17,
-              color: COLORS.textSecondary,
-              textAlign: "center",
-              lineHeight: 26,
-              paddingHorizontal: 20,
-            }}
-          >
-            That focused version of you that finishes what they start? Let's go
-            meet them.
-          </AppText>
-        </Animated.View>
+          <Animated.View entering={FadeIn.delay(700).duration(800)}>
+            <AppText
+              style={{
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.greenLight,
+                textAlign: "center",
+                letterSpacing: -1.5,
+              }}
+            >
+              Of You Exists.
+            </AppText>
+          </Animated.View>
+
+          <Animated.View entering={FadeIn.delay(1000).duration(600)}>
+            <AppText
+              style={{
+                fontSize: 20,
+                fontWeight: "600",
+                color: COLORS.textPrimary,
+                textAlign: "center",
+                lineHeight: 28,
+                marginTop: 24,
+              }}
+            >
+              Resistor helps you find them.
+            </AppText>
+          </Animated.View>
+        </View>
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1000).duration(600).springify()}
-          style={{ width: "100%", gap: 20 }}
+          entering={FadeInUp.delay(1200).duration(600).springify()}
+          style={{ gap: 20 }}
         >
           {/* Page Dots */}
           <View
@@ -244,52 +214,31 @@ export default function SetupCompleteScreen() {
           </View>
 
           {/* CTA Button */}
-          <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-            <AnimatedPressable
-              onPress={handleStart}
+          <AnimatedPressable
+            onPress={handleStart}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: COLORS.green,
+              paddingVertical: 22,
+              paddingHorizontal: 32,
+              borderRadius: 32,
+              gap: 12,
+            }}
+          >
+            <AppText
               style={{
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: COLORS.green,
-                paddingVertical: 22,
-                paddingHorizontal: 32,
-                borderRadius: 32,
-                gap: 12,
+                fontSize: 18,
+                fontWeight: "700",
+                color: COLORS.black,
+                letterSpacing: 0.5,
               }}
             >
-              <AppText
-                style={{
-                  fontSize: 18,
-                  fontWeight: "700",
-                  color: COLORS.black,
-                  letterSpacing: 0.5,
-                }}
-              >
-                Enter Resistor
-              </AppText>
-              <AppText style={{ fontSize: 18, color: COLORS.black }}>
-                ›››
-              </AppText>
-            </AnimatedPressable>
-
-            {/* Icon */}
-            <View
-              style={{
-                width: 58,
-                height: 58,
-                borderRadius: 29,
-                backgroundColor: COLORS.gray,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
-            >
-              <AppText style={{ fontSize: 26 }}>🍅</AppText>
-            </View>
-          </View>
+              Let's Begin
+            </AppText>
+            <AppText style={{ fontSize: 18, color: COLORS.black }}>›››</AppText>
+          </AnimatedPressable>
         </Animated.View>
       </View>
     </View>

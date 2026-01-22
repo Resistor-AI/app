@@ -1,53 +1,47 @@
 import React from "react";
-import { Text as RNText, TextStyle, StyleSheet } from "react-native";
+import { Text as RNText } from "react-native";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 /**
- * Typography variants
+ * Typography variants mapped to Tailwind classes
+ * Uses sizes and fonts from tailwind.config.js
  */
-const variants = {
-  display: {
-    fontSize: 48,
-    fontWeight: "800",
-    letterSpacing: -1,
-    lineHeight: 52,
-  },
-  h1: { fontSize: 36, fontWeight: "700" },
-  h2: { fontSize: 30, fontWeight: "700" },
-  h3: { fontSize: 24, fontWeight: "600" },
-  h4: { fontSize: 20, fontWeight: "600" },
-  h5: { fontSize: 18, fontWeight: "500" },
-  h6: { fontSize: 16, fontWeight: "500" },
-  body: { fontSize: 16, lineHeight: 24 },
-  "body-sm": { fontSize: 14, lineHeight: 20 },
-  "body-lg": { fontSize: 18, lineHeight: 28 },
-  caption: { fontSize: 13, lineHeight: 18 },
-  label: { fontSize: 14, fontWeight: "500" },
-  overline: {
-    fontSize: 12,
-    fontWeight: "600",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-  button: { fontSize: 16, fontWeight: "600", textAlign: "center" },
+const variantClasses = {
+  display: "text-5xl font-outfit-extrabold tracking-tighter leading-none",
+  h1: "text-4xl font-outfit-bold",
+  h2: "text-3xl font-outfit-bold",
+  h3: "text-2xl font-outfit-semibold",
+  h4: "text-xl font-outfit-semibold",
+  h5: "text-lg font-outfit-medium",
+  h6: "text-base font-outfit-medium",
+  body: "text-base font-sans leading-relaxed",
+  "body-sm": "text-sm font-sans leading-normal",
+  "body-lg": "text-lg font-sans leading-relaxed",
+  caption: "text-xs font-sans leading-tight",
+  label: "text-sm font-medium",
+  overline: "text-xs font-semibold uppercase tracking-widest",
+  button: "text-base font-semibold text-center",
 } as const;
 
-const colors = {
-  primary: "#ffffff",
-  secondary: "#9ca3af",
-  tertiary: "#6b7280",
-  muted: "#4b5563",
-  inverse: "#000000",
-  accent: "#c084fc",
-  error: "#ef4444",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  color: "#000000",
+/**
+ * Color variants mapped to Tailwind classes
+ * Uses colors from tailwind.config.js
+ */
+const colorClasses = {
+  primary: "text-textPrimary",
+  secondary: "text-textSecondary",
+  tertiary: "text-textTertiary",
+  inverse: "text-background",
+  accent: "text-deepPurple",
+  error: "text-neonRed",
+  success: "text-successGreen",
+  warning: "text-yellow-500",
+  blue: "text-electricBlue",
 } as const;
 
-export type TextVariant = keyof typeof variants;
-export type TextColor = keyof typeof colors;
+export type TextVariant = keyof typeof variantClasses;
+export type TextColor = keyof typeof colorClasses;
 
 export interface TextProps extends React.ComponentProps<typeof RNText> {
   variant?: TextVariant;
@@ -57,40 +51,27 @@ export interface TextProps extends React.ComponentProps<typeof RNText> {
 }
 
 /**
- * AppText - Reusable text component.
+ * AppText - Reusable text component using Tailwind CSS classes.
  */
 export const AppText = ({
   variant = "body",
   color = "primary",
   center,
   className,
-  style,
   children,
   ...rest
 }: TextProps) => {
-  // Merge utility classes
   const mergedClassName = twMerge(
     clsx(
-      center && "text-center", // NativeWind handles text-center
+      variantClasses[variant],
+      colorClasses[color],
+      center && "text-center",
       className,
     ),
   );
 
-  // Calculate explicit styles from props (variants/colors)
-  // We apply these as inline styles which will merge with CSS-generated styles
-  const baseStyle = variants[variant] || variants.body;
-  const colorStyle: TextStyle = { color: colors[color] };
-  const alignmentStyle: TextStyle = center ? { textAlign: "center" } : {};
-
   return (
-    <RNText
-      {...rest}
-      // Pass the class string for NativeWind to process
-      className={mergedClassName}
-      // Pass our explicit styles (variant/color)
-      // These will be merged with the styles generated from className
-      style={StyleSheet.flatten([baseStyle, colorStyle, alignmentStyle, style])}
-    >
+    <RNText {...rest} className={mergedClassName}>
       {children}
     </RNText>
   );

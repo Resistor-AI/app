@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { View, Pressable, useWindowDimensions } from "react-native";
-import { AppText, AchievementIcon } from "@/src/components/atoms";
+import { AppText } from "@/src/components/atoms";
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import Animated, {
@@ -18,11 +18,9 @@ import { useEffect } from "react";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Brand Colors from Landing Page
+// Brand Colors
 const COLORS = {
   black: "#080808",
-  offBlack: "#0d0d0d",
-  dark: "#121212",
   gray: "#1a1a1a",
   lightGray: "#2a2a2a",
   blue: "#2a6df5",
@@ -30,21 +28,12 @@ const COLORS = {
   green: "#10b981",
   greenLight: "#34d399",
   amber: "#f59e0b",
-  amberLight: "#fbbf24",
   purple: "#8b5cf6",
   purpleLight: "#a78bfa",
-  red: "#ef4444",
   textPrimary: "#ffffff",
   textSecondary: "#a1a1aa",
   textMuted: "#71717a",
 };
-
-const PILLARS = [
-  { icon: "🧠", color: COLORS.blue, label: "The Brain" },
-  { icon: "🛡️", color: COLORS.amber, label: "The Shield" },
-  { icon: "❤️", color: COLORS.green, label: "The Heart" },
-  { icon: "👥", color: COLORS.purple, label: "The Squad" },
-];
 
 export default function PillarsScreen() {
   const router = useRouter();
@@ -84,12 +73,12 @@ export default function PillarsScreen() {
           glowStyle,
           {
             position: "absolute",
-            top: "30%",
+            top: "20%",
             left: "-30%",
             width: 400,
             height: 400,
             borderRadius: 200,
-            backgroundColor: COLORS.purple,
+            backgroundColor: COLORS.green,
           },
         ]}
       />
@@ -98,12 +87,12 @@ export default function PillarsScreen() {
           glowStyle,
           {
             position: "absolute",
-            bottom: "20%",
+            bottom: "10%",
             right: "-20%",
             width: 300,
             height: 300,
             borderRadius: 150,
-            backgroundColor: COLORS.green,
+            backgroundColor: COLORS.purple,
           },
         ]}
       />
@@ -152,89 +141,107 @@ export default function PillarsScreen() {
         }}
       >
         {/* Header */}
-        <Animated.View
-          entering={FadeInDown.delay(300).duration(600)}
-          style={{ gap: 12 }}
-        >
-          <AppText
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              letterSpacing: 4,
-              color: COLORS.purpleLight,
-            }}
-          >
-            THE SYSTEM
-          </AppText>
-          <AppText
-            style={{
-              fontSize: 38,
-              fontWeight: "600",
-              lineHeight: 46,
-              color: COLORS.textPrimary,
-              letterSpacing: -0.5,
-            }}
-          >
-            Four Pillars.{"\n"}
-            <AppText style={{ color: COLORS.purpleLight }}>One System.</AppText>
-          </AppText>
-        </Animated.View>
+        <View>
+          <Animated.View entering={FadeInDown.delay(200).duration(800)}>
+            <AppText
+              style={{
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.textPrimary,
+                letterSpacing: -1.5,
+              }}
+            >
+              What If Your
+            </AppText>
+          </Animated.View>
 
-        {/* Pillars Grid */}
-        <View style={{ gap: 16 }}>
-          {PILLARS.map((pillar, index) => (
+          <Animated.View entering={FadeInDown.delay(400).duration(800)}>
+            <AppText
+              style={{
+                fontSize: 44,
+                fontWeight: "700",
+                lineHeight: 52,
+                color: COLORS.greenLight,
+                letterSpacing: -1.5,
+              }}
+            >
+              Device Fought{"\n"}For You?
+            </AppText>
+          </Animated.View>
+        </View>
+
+        {/* Pillars */}
+        <View style={{ gap: 12 }}>
+          {[
+            {
+              icon: "🧠",
+              title: "The Brain",
+              desc: "AI schedules your focus",
+              color: COLORS.blue,
+            },
+            {
+              icon: "🛡️",
+              title: "The Shield",
+              desc: "Blocks distractions",
+              color: COLORS.amber,
+            },
+            {
+              icon: "❤️",
+              title: "The Heart",
+              desc: "Protects your energy",
+              color: COLORS.green,
+            },
+            {
+              icon: "👥",
+              title: "The Squad",
+              desc: "Keeps you accountable",
+              color: COLORS.purple,
+            },
+          ].map((pillar, index) => (
             <Animated.View
               key={index}
-              entering={FadeInUp.delay(500 + index * 100).duration(500)}
+              entering={FadeInUp.delay(600 + index * 100).duration(500)}
               style={{
                 backgroundColor: COLORS.gray,
-                borderRadius: 24,
-                padding: 20,
+                borderRadius: 20,
+                padding: 16,
                 flexDirection: "row",
                 alignItems: "center",
-                gap: 16,
+                gap: 14,
                 borderWidth: 1,
                 borderColor: "rgba(255,255,255,0.06)",
               }}
             >
               <View
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 18,
+                  width: 48,
+                  height: 48,
+                  borderRadius: 14,
                   backgroundColor: pillar.color,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <AppText style={{ fontSize: 26 }}>{pillar.icon}</AppText>
+                <AppText style={{ fontSize: 22 }}>{pillar.icon}</AppText>
               </View>
               <View style={{ flex: 1 }}>
                 <AppText
                   style={{
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: "700",
                     color: COLORS.textPrimary,
-                    marginBottom: 4,
                   }}
                 >
-                  {pillar.label}
+                  {pillar.title}
                 </AppText>
                 <AppText
                   style={{
                     fontSize: 14,
                     color: COLORS.textSecondary,
-                    lineHeight: 20,
                   }}
                 >
-                  {pillar.label === "The Brain" &&
-                    "AI-driven scheduling based on your energy"}
-                  {pillar.label === "The Shield" &&
-                    "Unbreakable barriers for deep work"}
-                  {pillar.label === "The Heart" &&
-                    "Energy tracking and burnout prevention"}
-                  {pillar.label === "The Squad" &&
-                    "Accountability with your team"}
+                  {pillar.desc}
                 </AppText>
               </View>
             </Animated.View>
@@ -243,7 +250,7 @@ export default function PillarsScreen() {
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1000).duration(600).springify()}
+          entering={FadeInUp.delay(1100).duration(600).springify()}
           style={{ gap: 20 }}
         >
           {/* Page Dots */}
@@ -261,7 +268,7 @@ export default function PillarsScreen() {
                   width: i === 2 ? 24 : 8,
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor: i === 2 ? COLORS.purple : COLORS.lightGray,
+                  backgroundColor: i === 2 ? COLORS.green : COLORS.lightGray,
                 }}
               />
             ))}
@@ -274,7 +281,7 @@ export default function PillarsScreen() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: COLORS.purple,
+              backgroundColor: COLORS.green,
               paddingVertical: 20,
               paddingHorizontal: 32,
               borderRadius: 32,
@@ -285,13 +292,13 @@ export default function PillarsScreen() {
               style={{
                 fontSize: 17,
                 fontWeight: "600",
-                color: "#fff",
+                color: COLORS.black,
                 letterSpacing: 0.3,
               }}
             >
-              Continue
+              I Want This
             </AppText>
-            <AppText style={{ fontSize: 18, color: "#fff" }}>›››</AppText>
+            <AppText style={{ fontSize: 18, color: COLORS.black }}>›››</AppText>
           </AnimatedPressable>
         </Animated.View>
       </View>
