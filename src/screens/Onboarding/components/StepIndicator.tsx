@@ -1,23 +1,31 @@
 import { View } from "react-native";
 
+// Explicit class mappings for Tailwind to detect at build time
+const ACTIVE_COLORS = {
+  electricBlue: "bg-electricBlue",
+  amber: "bg-amber",
+  successGreen: "bg-successGreen",
+  deepPurple: "bg-deepPurple",
+} as const;
+
 export interface StepIndicatorProps {
   /** Total number of steps */
   totalSteps?: number;
   /** Current step (0-indexed) */
   currentStep: number;
-  /** Active step color - use Tailwind color class without 'bg-' prefix */
-  activeColor?: "electricBlue" | "amber-500" | "successGreen" | "deepPurple";
+  /** Active step color */
+  activeColor?: keyof typeof ACTIVE_COLORS;
 }
 
 /**
  * StepIndicator - Displays onboarding progress dots
  */
 export function StepIndicator({
-  totalSteps = 5,
+  totalSteps = 6,
   currentStep,
   activeColor = "electricBlue",
 }: StepIndicatorProps) {
-  const activeColorClass = `bg-${activeColor}`;
+  const activeColorClass = ACTIVE_COLORS[activeColor];
 
   return (
     <View className="flex-row justify-center gap-2">

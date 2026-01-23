@@ -32,6 +32,8 @@ module.exports = {
         electricBlue: "#0A84FF", // The Brain / AI / Active
         deepPurple: "#5E5CE6", // Secondary Gradients
         successGreen: "#30D158", // Pulse / Completion
+        amber: "#F59E0B", // Warning / Attention
+        amberLight: "#FBBF24", // Amber accent
 
         // THE TEXT (Typography)
         textPrimary: "#FFFFFF",

@@ -1,301 +1,260 @@
 import { useRouter } from "expo-router";
-import { View, Pressable, useWindowDimensions } from "react-native";
+import { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  useWindowDimensions,
+  Pressable,
+  Platform,
+  Linking,
+  Alert,
+} from "react-native";
 import * as Haptics from "expo-haptics";
+import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
-import { useEffect } from "react";
+import { BlurView } from "expo-blur";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { FadeIn, FadeInUp, ZoomIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
+import { COLORS, PERMISSIONS, PermissionStatus } from "@/src/constants";
+import {
+  OnboardingHeader,
+  OnboardingButton,
+  StepIndicator,
+  OnboardingSubtext,
+} from "./components";
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-// Brand Colors
-const COLORS = {
-  black: "#080808",
-  gray: "#1a1a1a",
-  lightGray: "#2a2a2a",
-  blue: "#2a6df5",
-  blueLight: "#60a5fa",
-  green: "#10b981",
-  amber: "#f59e0b",
-  purple: "#8b5cf6",
-  purpleLight: "#a78bfa",
-  textPrimary: "#ffffff",
-  textSecondary: "#a1a1aa",
-  textMuted: "#71717a",
-};
+type PermissionKey = "notifications" | "usage";
+type PermissionStates = Record<PermissionKey, PermissionStatus>;
 
 export default function PermissionsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
 
-  const glowOpacity = useSharedValue(0.1);
+  const [permissionStates, setPermissionStates] = useState<PermissionStates>({
+    notifications: "pending",
+    usage: "pending",
+  });
+  const [isRequesting, setIsRequesting] = useState(false);
 
+  // Check initial notification permission status
   useEffect(() => {
-    glowOpacity.value = withRepeat(
-      withSequence(
-        withTiming(0.15, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0.1, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
-      ),
-      -1,
-      true,
-    );
+    checkNotificationStatus();
   }, []);
 
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value,
-  }));
-
-  const handlePress = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push("./complete");
+  const checkNotificationStatus = async () => {
+    const { status } = await Notifications.getPermissionsAsync();
+    setPermissionStates((prev) => ({
+      ...prev,
+      notifications: status === "granted" ? "granted" : "pending",
+    }));
   };
 
-  const handleSkip = () => router.push("./complete");
+  const requestNotificationPermission = async () => {
+    setIsRequesting(true);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    try {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+
+      if (existingStatus === "granted") {
+        setPermissionStates((prev) => ({ ...prev, notifications: "granted" }));
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+        return;
+      }
+
+      if (existingStatus === "denied") {
+        Alert.alert(
+          "Notifications Disabled",
+          "Please enable notifications in Settings to receive focus reminders.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Open Settings", onPress: () => Linking.openSettings() },
+          ],
+        );
+        return;
+      }
+
+      const { status } = await Notifications.requestPermissionsAsync();
+
+      if (status === "granted") {
+        setPermissionStates((prev) => ({ ...prev, notifications: "granted" }));
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+      } else {
+        setPermissionStates((prev) => ({ ...prev, notifications: "denied" }));
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      }
+    } catch (error) {
+      console.error("Error requesting notification permission:", error);
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
+  const requestUsageAccess = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    Alert.alert(
+      "Enable Screen Time",
+      Platform.OS === "ios"
+        ? "To help block distracting apps, please enable Screen Time in Settings > Screen Time."
+        : "To help block distracting apps, please enable Usage Access in Settings > Apps > Special access > Usage access.",
+      [
+        { text: "Later", style: "cancel" },
+        {
+          text: "Open Settings",
+          onPress: async () => {
+            await Linking.openSettings();
+            setPermissionStates((prev) => ({ ...prev, usage: "granted" }));
+          },
+        },
+      ],
+    );
+  };
+
+  const handlePermissionPress = useCallback(
+    async (key: PermissionKey) => {
+      if (isRequesting) return;
+
+      switch (key) {
+        case "notifications":
+          await requestNotificationPermission();
+          break;
+        case "usage":
+          await requestUsageAccess();
+          break;
+      }
+    },
+    [isRequesting],
+  );
+
+  const handleContinue = async () => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    router.push("/(app)/(public)/(auth)");
+  };
+
+  const getPermissionIcon = (key: PermissionKey): string => {
+    const status = permissionStates[key];
+    if (status === "granted") return "✓";
+    if (status === "denied") return "✕";
+    return "→";
+  };
+
+  const getPermissionIconBg = (key: PermissionKey): string => {
+    const status = permissionStates[key];
+    if (status === "granted") return COLORS.deepPurple || "#5E5CE6";
+    if (status === "denied") return "#FF4444";
+    return `${COLORS.deepPurple || "#5E5CE6"}80`;
+  };
+
+  const canContinue =
+    permissionStates.notifications !== "pending" ||
+    permissionStates.usage !== "pending";
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.black }}>
+    <View className="flex-1 bg-background">
       <StatusBar style="light" />
 
-      {/* Background Glow */}
-      <Animated.View
-        style={[
-          glowStyle,
-          {
-            position: "absolute",
-            top: "35%",
-            left: "-25%",
-            width: 400,
-            height: 400,
-            borderRadius: 200,
-            backgroundColor: COLORS.purpleLight,
-          },
-        ]}
-      />
-
-      {/* Skip Button */}
-      <Animated.View
-        entering={FadeIn.delay(300).duration(500)}
-        style={{
-          position: "absolute",
-          top: 60,
-          right: 24,
-          zIndex: 10,
-        }}
-      >
-        <Pressable
-          onPress={handleSkip}
-          style={{
-            backgroundColor: COLORS.lightGray,
-            paddingHorizontal: 18,
-            paddingVertical: 10,
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.1)",
-          }}
-        >
-          <AppText
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: COLORS.textPrimary,
-            }}
-          >
-            Skip
-          </AppText>
-        </Pressable>
-      </Animated.View>
-
-      {/* Main Content */}
       <View
-        style={{
-          flex: 1,
-          paddingHorizontal: 28,
-          paddingTop: height * 0.15,
-          paddingBottom: 40,
-          justifyContent: "space-between",
-        }}
+        className="flex-1 px-7 pb-10 justify-between"
+        style={{ paddingTop: height * 0.12 }}
       >
-        {/* Header */}
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <Animated.View entering={FadeInDown.delay(200).duration(800)}>
-            <AppText
-              style={{
-                fontSize: 44,
-                fontWeight: "700",
-                lineHeight: 52,
-                color: COLORS.textPrimary,
-                letterSpacing: -1.5,
-              }}
-            >
-              Imagine
-            </AppText>
+        <View>
+          <Animated.View entering={FadeIn.delay(200).duration(800)}>
+            <OnboardingHeader
+              title="Give Us"
+              subtitle="The Shield."
+              accentColor="deepPurple"
+            />
+
+            <OnboardingSubtext className="mt-4">
+              Tap each permission to enable. These help Resistor protect your
+              focus.
+            </OnboardingSubtext>
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(400).duration(800)}>
-            <AppText
-              style={{
-                fontSize: 44,
-                fontWeight: "700",
-                lineHeight: 52,
-                color: COLORS.purpleLight,
-                letterSpacing: -1.5,
-              }}
-            >
-              Finishing What{"\n"}You Started.
-            </AppText>
-          </Animated.View>
-
-          <Animated.View entering={FadeIn.delay(800).duration(600)}>
-            <AppText
-              style={{
-                fontSize: 18,
-                color: COLORS.textSecondary,
-                lineHeight: 28,
-                marginTop: 32,
-              }}
-            >
-              Imagine ending the day proud,{"\n"}not exhausted.
-            </AppText>
-          </Animated.View>
-
-          {/* Permission Cards */}
-          <Animated.View
-            entering={FadeInUp.delay(1000).duration(600)}
-            style={{ marginTop: 32, gap: 12 }}
-          >
-            {[
-              {
-                icon: "🔔",
-                title: "Notifications",
-                desc: "Gentle focus reminders",
-              },
-              { icon: "📱", title: "Usage Access", desc: "Smart app blocking" },
-            ].map((perm, i) => (
-              <View
-                key={i}
-                style={{
-                  backgroundColor: COLORS.gray,
-                  borderRadius: 20,
-                  padding: 16,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 14,
-                  borderWidth: 1,
-                  borderColor: "rgba(255,255,255,0.06)",
-                }}
+          <View className="gap-4 mt-12">
+            {PERMISSIONS.map((perm, index) => (
+              <Animated.View
+                key={perm.key}
+                entering={ZoomIn.delay(800 + index * 100)
+                  .duration(400)
+                  .springify()}
               >
-                <View
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 14,
-                    backgroundColor: COLORS.purple,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                <Pressable
+                  onPress={() =>
+                    handlePermissionPress(perm.key as PermissionKey)
+                  }
+                  disabled={
+                    isRequesting ||
+                    permissionStates[perm.key as PermissionKey] === "granted"
+                  }
                 >
-                  <AppText style={{ fontSize: 22 }}>{perm.icon}</AppText>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <AppText
+                  <BlurView
+                    intensity={50}
+                    tint="dark"
+                    className="rounded-3xl overflow-hidden border border-white/15"
                     style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: COLORS.textPrimary,
+                      opacity:
+                        permissionStates[perm.key as PermissionKey] ===
+                        "granted"
+                          ? 0.7
+                          : 1,
                     }}
                   >
-                    {perm.title}
-                  </AppText>
-                  <AppText
-                    style={{
-                      fontSize: 14,
-                      color: COLORS.textSecondary,
-                    }}
-                  >
-                    {perm.desc}
-                  </AppText>
-                </View>
-              </View>
-            ))}
-          </Animated.View>
-        </View>
+                    <View className="flex-row items-center p-5 gap-4">
+                      <View
+                        className="size-16 rounded-2xl items-center justify-center"
+                        style={{ backgroundColor: `${COLORS.deepPurple}30` }}
+                      >
+                        <AppText className="text-4xl mt-1">{perm.icon}</AppText>
+                      </View>
 
-        {/* Bottom Section */}
-        <Animated.View
-          entering={FadeInUp.delay(1200).duration(600).springify()}
-          style={{ gap: 16 }}
-        >
-          {/* Page Dots */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            {[0, 1, 2, 3, 4].map((i) => (
-              <View
-                key={i}
-                style={{
-                  width: i === 3 ? 24 : 8,
-                  height: 8,
-                  borderRadius: 4,
-                  backgroundColor: i === 3 ? COLORS.purple : COLORS.lightGray,
-                }}
-              />
+                      <View className="flex-1">
+                        <AppText variant="h5">{perm.title}</AppText>
+                        <AppText
+                          variant="body-sm"
+                          color="secondary"
+                          className="mt-1"
+                        >
+                          {perm.desc}
+                        </AppText>
+                      </View>
+
+                      <View
+                        className="size-8 rounded-full items-center justify-center"
+                        style={{
+                          backgroundColor: getPermissionIconBg(
+                            perm.key as PermissionKey,
+                          ),
+                        }}
+                      >
+                        <AppText className="text-base text-white">
+                          {getPermissionIcon(perm.key as PermissionKey)}
+                        </AppText>
+                      </View>
+                    </View>
+                  </BlurView>
+                </Pressable>
+              </Animated.View>
             ))}
           </View>
+        </View>
 
-          {/* CTA Button */}
-          <AnimatedPressable
-            onPress={handlePress}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: COLORS.purple,
-              paddingVertical: 20,
-              paddingHorizontal: 32,
-              borderRadius: 32,
-            }}
-          >
-            <AppText
-              style={{
-                fontSize: 17,
-                fontWeight: "600",
-                color: "#fff",
-                letterSpacing: 0.3,
-              }}
-            >
-              Allow Permissions
-            </AppText>
-          </AnimatedPressable>
-
-          {/* Skip Link */}
-          <Pressable
-            onPress={handleSkip}
-            style={{ alignItems: "center", paddingVertical: 8 }}
-          >
-            <AppText
-              style={{
-                fontSize: 15,
-                color: COLORS.textMuted,
-                fontWeight: "500",
-              }}
-            >
-              Not now
-            </AppText>
-          </Pressable>
+        <Animated.View
+          entering={FadeInUp.delay(1200).duration(600).springify()}
+          className="gap-5"
+        >
+          <StepIndicator currentStep={3} activeColor="deepPurple" />
+          <OnboardingButton
+            label={canContinue ? "Continue" : "Enable Permissions"}
+            variant="purple"
+            onPress={handleContinue}
+          />
         </Animated.View>
       </View>
     </View>

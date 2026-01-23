@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { AppText } from "@/src/components/atoms";
+import { AppText } from "@/src/components/atoms/text";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 interface FeatureCardProps {

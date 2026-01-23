@@ -3,14 +3,19 @@ import Animated from "react-native-reanimated";
 import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
+import { cssInterop } from "react-native-css-interop";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+cssInterop(AnimatedPressable, {
+  className: "style",
+});
 
 type ButtonVariant = "blue" | "amber" | "green" | "purple";
 
 const variantClasses: Record<ButtonVariant, { bg: string; text: string }> = {
   blue: { bg: "bg-electricBlue", text: "text-textPrimary" },
-  amber: { bg: "bg-amber-500", text: "text-background" },
+  amber: { bg: "bg-amber", text: "text-background" },
   green: { bg: "bg-successGreen", text: "text-background" },
   purple: { bg: "bg-deepPurple", text: "text-textPrimary" },
 };
@@ -48,7 +53,7 @@ export function OnboardingButton({
     <AnimatedPressable
       onPress={handlePress}
       className={twMerge(
-        "flex-row items-center justify-center py-5 px-8 rounded-full gap-3",
+        "flex-row items-center justify-center py-5 px-8 rounded-full gap-3 mt-8",
         bg,
         className,
       )}

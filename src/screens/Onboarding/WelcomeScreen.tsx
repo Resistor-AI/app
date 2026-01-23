@@ -1,26 +1,14 @@
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, View, useWindowDimensions, Text } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-} from "react-native-reanimated";
-import { OnboardingHeader, OnboardingSubtext } from "./components";
-import { AppText } from "@/src/components/atoms/text";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-// Brand Colors
-const COLORS = {
-  black: "#000000",
-  gray: "#1a1a1a",
-  lightGray: "#2a2a2a",
-  blue: "#0A84FF",
-  textPrimary: "#ffffff",
-  textSecondary: "#86868B",
-};
+import { View, useWindowDimensions } from "react-native";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import {
+  OnboardingButton,
+  OnboardingHeader,
+  OnboardingSubtext,
+  StepIndicator,
+} from "./components";
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -31,74 +19,36 @@ export default function WelcomeScreen() {
     router.push("./problem");
   };
 
-  const handleSkip = () => {
-    router.push("./complete");
-  };
-
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.black }}>
+    <View className="flex-1 bg-background px-7">
       <StatusBar style="light" />
 
       {/* Content */}
-      <View className="flex-1 justify-center px-4 gap-y-4">
+      <View className="flex-1 justify-center gap-y-5">
         {/* Hero Text */}
-        <Animated.View
+        {/* <Animated.View
           entering={FadeInDown.delay(100).duration(800).springify()}
-        >
-          <OnboardingHeader
-            title="You promised yourself"
-            subtitle="Just 5 minutes."
-          />
-        </Animated.View>
+        > */}
+        <OnboardingHeader
+          title={'"Just 5 More\n Minutes."'}
+          subtitle="3 Hours Later..."
+        />
+        {/* </Animated.View> */}
 
         {/* Subtext */}
-        {/* <Animated.View entering={FadeIn.delay(600).duration(600)}> */}
         <OnboardingSubtext>
-          3 hours later, you hate yourself. The guilt. The wasted potential.
+          The scroll took your morning. Your energy. Your plans. Again. 😔
         </OnboardingSubtext>
-        {/* </Animated.View> */}
       </View>
 
       {/* Bottom */}
       <Animated.View
         entering={FadeInUp.delay(800).duration(600).springify()}
-        style={{
-          paddingHorizontal: 24,
-          paddingBottom: height * 0.05,
-          gap: 20,
-        }}
+        className="px-7 gap-5"
+        style={{ paddingBottom: height * 0.05 }}
       >
-        {/* Progress */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: 8,
-          }}
-        >
-          {[0, 1, 2, 3, 4].map((i) => (
-            <View
-              key={i}
-              style={{
-                width: i === 0 ? 24 : 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: i === 0 ? COLORS.blue : COLORS.lightGray,
-              }}
-            />
-          ))}
-        </View>
-
-        {/* CTA Button */}
-        <AnimatedPressable
-          onPress={handlePress}
-          className="flex-row items-center justify-center py-5 bg-blue-500 rounded-full gap-4"
-        >
-          <AppText variant="body-lg" className="font-outfit-semibold">
-            That's Me
-          </AppText>
-          <AppText>›››</AppText>
-        </AnimatedPressable>
+        <StepIndicator currentStep={0} />
+        <OnboardingButton onPress={handlePress} label="Yeah, That's Me" />
       </Animated.View>
     </View>
   );

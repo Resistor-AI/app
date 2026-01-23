@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { View, Pressable } from "react-native";
-import { AppText } from "@/src/components/atoms";
+import { AppText } from "@/src/components/atoms/text";
 import { StatusBar } from "expo-status-bar";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";

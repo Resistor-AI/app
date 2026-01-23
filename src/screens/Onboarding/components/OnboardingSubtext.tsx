@@ -1,13 +1,16 @@
 import { AppText } from "@/src/components/atoms/text";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { twMerge } from "tailwind-merge";
 
 export interface OnboardingSubtextProps {
   /** Main description text */
-  children: string;
+  children?: string;
   /** Optional emphasized follow-up line */
   emphasis?: string;
   /** Animation delay offset in ms */
   animationDelay?: number;
+
+  className?: string;
 }
 
 /**
@@ -17,6 +20,7 @@ export function OnboardingSubtext({
   children,
   emphasis,
   animationDelay = 600,
+  className,
 }: OnboardingSubtextProps) {
   return (
     <>
@@ -24,7 +28,7 @@ export function OnboardingSubtext({
         <AppText
           variant="body-lg"
           color="secondary"
-          className="leading-relaxed"
+          className={twMerge("leading-relaxed font-semibold", className)}
         >
           {children}
         </AppText>
@@ -34,7 +38,7 @@ export function OnboardingSubtext({
         <Animated.View
           entering={FadeIn.delay(animationDelay + 200).duration(600)}
         >
-          <AppText variant="h5" className="mt-4 leading-relaxed">
+          <AppText variant="h5" className="leading-relaxed">
             {emphasis}
           </AppText>
         </Animated.View>

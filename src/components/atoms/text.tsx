@@ -1,14 +1,14 @@
-import React from "react";
 import { Text as RNText } from "react-native";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { cssInterop } from "react-native-css-interop";
 
 /**
  * Typography variants mapped to Tailwind classes
  * Uses sizes and fonts from tailwind.config.js
  */
 const variantClasses = {
-  display: "text-5xl font-outfit-extrabold tracking-tighter leading-none",
+  display: "text-5xl font-outfit-extrabold tracking-tight leading-snug",
   h1: "text-4xl font-outfit-bold",
   h2: "text-3xl font-outfit-bold",
   h3: "text-2xl font-outfit-semibold",
@@ -76,5 +76,10 @@ export const AppText = ({
     </RNText>
   );
 };
+
+// Register for NativeWind to properly handle className on the custom component
+cssInterop(AppText, {
+  className: "style",
+});
 
 AppText.displayName = "AppText";
