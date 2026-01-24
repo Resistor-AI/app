@@ -22,9 +22,7 @@ import {
   StepIndicator,
   OnboardingSubtext,
 } from "./components";
-
-type PermissionKey = "notifications" | "usage";
-type PermissionStates = Record<PermissionKey, PermissionStatus>;
+import { PermissionKey, PermissionStates } from "@/src/types/PermissionsScreen";
 
 export default function PermissionsScreen() {
   const router = useRouter();
@@ -166,6 +164,7 @@ export default function PermissionsScreen() {
         <View>
           <Animated.View entering={FadeIn.delay(200).duration(800)}>
             <OnboardingHeader
+              className="-mb-8"
               title="Give Us"
               subtitle="The Shield."
               accentColor="deepPurple"

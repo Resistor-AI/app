@@ -46,7 +46,7 @@ export default function ProblemScreen() {
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1300).duration(600).springify()}
+          entering={FadeInUp.delay(1300).duration(400).springify()}
           className="gap-5"
         >
           <StepIndicator currentStep={1} activeColor="amber" />

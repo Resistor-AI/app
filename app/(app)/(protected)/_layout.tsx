@@ -1,12 +1,15 @@
 import { Stack } from "expo-router";
-import React from "react";
 
-const ProtectedLayout = () => {
+export default function ProtectedLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="brain" />
+      <Stack.Screen name="shield" />
+      <Stack.Screen name="squad" />
+      <Stack.Screen name="focus" />
+      <Stack.Screen name="focus-setup" />
+      <Stack.Screen name="break" />
     </Stack>
   );
-};
-
-export default ProtectedLayout;
+}

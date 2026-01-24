@@ -9,9 +9,11 @@ import { useState } from "react";
 import { AppText } from "@/src/components/atoms/text";
 import { COLORS, USER_ROLES } from "@/src/constants";
 import { OnboardingButton } from "../Onboarding/components";
+import { useAuth } from "@/src/lib/auth-context";
 
 export default function UserInfoScreen() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const { bottom, top } = useSafeAreaInsets();
 
   const [name, setName] = useState("");
@@ -20,8 +22,7 @@ export default function UserInfoScreen() {
   const handleContinue = async () => {
     if (!name.trim() || !selectedRole) return;
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    // TODO: Save user info
-    router.replace("/(app)/(protected)");
+    signIn();
   };
 
   const handleRoleSelect = async (roleId: string) => {

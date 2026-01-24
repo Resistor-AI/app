@@ -1,86 +1,46 @@
 import React from "react";
-import { View, ScrollView, Pressable } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
-import { useRouter } from "expo-router";
-import * as Haptics from "expo-haptics";
-import { AppText } from "@/src/components/atoms/text";
-import { COLORS, PILLARS } from "@/src/constants";
-import { FocusScoreCard, PillarCard, QuickStatsRow } from "./components";
+import { View, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { USER, PAST_SESSIONS } from "@/src/data/DashboardScreen";
+import {
+  DashboardHeader,
+  StatsCard,
+  PriorityQueue,
+  PastSessionsList,
+} from "./components";
 
-export default function DashboardScreen() {
-  const { top, bottom } = useSafeAreaInsets();
-  const router = useRouter();
-
-  // Mock data
-  const user = { name: "Alex" };
-  const currentScore = 84;
-
-  const todayStr = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  });
-
+export default function Dashboard() {
   return (
-    <View className="flex-1 bg-background">
-      <StatusBar style="light" />
+    <View className="flex-1 bg-black">
+      {/* Background: Subtle Ambient Glow */}
+      <View className="absolute top-[5%] left-[10%] right-[10%] h-[400px] bg-blue-900/10 rounded-full blur-[100px]" />
 
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: top + 20,
-          paddingBottom: bottom + 100,
-          paddingHorizontal: 24,
-        }}
-      >
-        {/* Header */}
-        <Animated.View entering={FadeIn.duration(800)}>
-          <View className="flex-row justify-between items-end mb-8">
-            <View>
-              <AppText variant="h6" color="secondary" className="mb-1">
-                {todayStr}
-              </AppText>
-              <AppText variant="h2">Hey {user.name} 👋</AppText>
-            </View>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-              className="size-12 rounded-2xl bg-surface items-center justify-center border border-white/10"
-            >
-              <AppText className="text-xl">⚙️</AppText>
-            </Pressable>
-          </View>
-        </Animated.View>
+      <SafeAreaView className="flex-1">
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* ==================================================================================== */}
+          {/* 1. HEADER: Professional Greeting                                                     */}
+          {/* ==================================================================================== */}
+          <DashboardHeader />
 
-        {/* Hero Score Section */}
-        <View className="items-center mb-12">
-          <FocusScoreCard score={currentScore} />
-        </View>
+          {/* ================================================================================== */}
+          {/* 2. THE UNIFIED STATS CARD (Streak is Obvious)                                      */}
+          {/* ================================================================================== */}
+          <StatsCard user={USER} />
 
-        {/* Pillar Quick Actions */}
-        <View className="flex-row flex-wrap justify-between mt-4">
-          {PILLARS.map((pillar, index) => (
-            <PillarCard
-              key={pillar.title}
-              icon={pillar.icon}
-              title={pillar.title.replace("The ", "")}
-              subtitle={pillar.desc}
-              color={pillar.color}
-              delay={400 + index * 100}
-              onPress={() => {
-                // Future navigation
-              }}
-            />
-          ))}
-        </View>
+          {/* ==================================================================================== */}
+          {/* 3. PRIORITY QUEUE (Refined Active Card)                                              */}
+          {/* ==================================================================================== */}
+          <PriorityQueue />
 
-        {/* Daily Stats */}
-        <QuickStatsRow />
-      </ScrollView>
+          {/* ==================================================================================== */}
+          {/* 4. PAST RECORDS (History List)                                                       */}
+          {/* ==================================================================================== */}
+          <PastSessionsList sessions={PAST_SESSIONS} />
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
