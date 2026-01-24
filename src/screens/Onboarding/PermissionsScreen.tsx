@@ -19,8 +19,8 @@ import { COLORS, PERMISSIONS, PermissionStatus } from "@/src/constants";
 import {
   OnboardingHeader,
   OnboardingButton,
-  StepIndicator,
   OnboardingSubtext,
+  OnboardingStepper,
 } from "./components";
 import { PermissionKey, PermissionStates } from "@/src/types/PermissionsScreen";
 
@@ -154,13 +154,15 @@ export default function PermissionsScreen() {
     permissionStates.usage !== "pending";
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
 
-      <View
-        className="flex-1 px-7 pb-10 justify-between"
-        style={{ paddingTop: height * 0.12 }}
-      >
+      {/* Top Section */}
+      <View className="px-7">
+        <OnboardingStepper totalSteps={4} currentStep={3} />
+      </View>
+
+      <View className="flex-1 px-7 pb-10 justify-between mt-6">
         <View>
           <Animated.View entering={FadeIn.delay(200).duration(800)}>
             <OnboardingHeader
@@ -248,7 +250,6 @@ export default function PermissionsScreen() {
           entering={FadeInUp.delay(1200).duration(600).springify()}
           className="gap-5"
         >
-          <StepIndicator currentStep={3} activeColor="deepPurple" />
           <OnboardingButton
             label={canContinue ? "Continue" : "Enable Permissions"}
             variant="purple"

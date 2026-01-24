@@ -1,23 +1,20 @@
-import { Pressable, PressableProps } from "react-native";
-import Animated from "react-native-reanimated";
+import { Pressable, PressableProps, View, StyleSheet } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
-import { cssInterop } from "react-native-css-interop";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-cssInterop(AnimatedPressable, {
-  className: "style",
-});
 
 type ButtonVariant = "blue" | "amber" | "green" | "purple";
 
-const variantClasses: Record<ButtonVariant, { bg: string; text: string }> = {
-  blue: { bg: "bg-electricBlue", text: "text-textPrimary" },
-  amber: { bg: "bg-amber", text: "text-background" },
-  green: { bg: "bg-successGreen", text: "text-background" },
-  purple: { bg: "bg-deepPurple", text: "text-textPrimary" },
+const VARIANT_COLORS: Record<ButtonVariant, { bg: string; text: string }> = {
+  blue: { bg: "#0A84FF", text: "text-textPrimary" }, // electricBlue
+  amber: { bg: "#F59E0B", text: "text-background" }, // amber
+  green: { bg: "#30D158", text: "text-background" }, // successGreen
+  purple: { bg: "#5E5CE6", text: "text-textPrimary" }, // deepPurple
 };
 
 export interface OnboardingButtonProps extends Omit<PressableProps, "style"> {
@@ -42,34 +39,65 @@ export function OnboardingButton({
   onPress,
   ...rest
 }: OnboardingButtonProps) {
-  const { bg, text } = variantClasses[variant];
+  const { bg, text } = VARIANT_COLORS[variant];
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
 
   const handlePress = async (e: any) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPress?.(e);
   };
 
+  const handlePressIn = () => {
+    scale.value = withTiming(0.98, { duration: 100 });
+    opacity.value = withTiming(0.8, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 200 });
+    opacity.value = withTiming(1, { duration: 200 });
+  };
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
   return (
-    <AnimatedPressable
+    <Pressable
       onPress={handlePress}
-      className={twMerge(
-        "flex-row items-center justify-center py-5 px-8 rounded-full gap-3 mt-8",
-        bg,
-        className,
-      )}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       {...rest}
     >
-      <AppText
-        variant="body-lg"
-        className={twMerge("font-outfit-semibold", text)}
+      <Animated.View
+        style={[styles.container, { backgroundColor: bg }, animatedStyle]}
       >
-        {label}
-      </AppText>
-      {showArrow && (
-        <AppText variant="body-lg" className={text}>
-          ›››
+        <AppText
+          variant="body-lg"
+          className={twMerge("font-outfit-semibold", text)}
+        >
+          {label}
         </AppText>
-      )}
-    </AnimatedPressable>
+        {showArrow && (
+          <AppText variant="body-lg" className={text}>
+            ›››
+          </AppText>
+        )}
+      </Animated.View>
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+    paddingHorizontal: 32,
+    borderRadius: 9999, // full
+    gap: 12, // gap-3 (3 * 4 = 12px)
+    marginTop: 32, // mt-8 (8 * 4 = 32px)
+  },
+});

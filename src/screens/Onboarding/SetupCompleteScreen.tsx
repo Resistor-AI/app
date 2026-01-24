@@ -19,7 +19,7 @@ import { COLORS } from "@/src/constants";
 import {
   OnboardingHeader,
   OnboardingButton,
-  StepIndicator,
+  OnboardingStepper,
 } from "./components";
 
 export default function SetupCompleteScreen() {
@@ -49,14 +49,16 @@ export default function SetupCompleteScreen() {
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
 
+      {/* Top Section */}
+      <View className="px-7">
+        <OnboardingStepper totalSteps={4} currentStep={4} />
+      </View>
+
       {/* Main Content */}
-      <View
-        className="flex-1 px-7 pb-10 justify-between"
-        style={{ paddingTop: height * 0.15 }}
-      >
+      <View className="flex-1 px-7 pb-10 justify-between mt-6">
         {/* Hero Section */}
         <View className="flex-1 justify-center items-center">
           {/* Success Icon */}
@@ -99,7 +101,6 @@ export default function SetupCompleteScreen() {
           entering={FadeInUp.delay(1200).duration(600).springify()}
           className="gap-5"
         >
-          <StepIndicator currentStep={5} activeColor="successGreen" />
           <OnboardingButton
             label="Let's Begin"
             variant="green"

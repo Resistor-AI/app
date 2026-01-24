@@ -9,7 +9,7 @@ import { COLORS, PILLARS } from "@/src/constants";
 import {
   OnboardingHeader,
   OnboardingButton,
-  StepIndicator,
+  OnboardingStepper,
 } from "./components";
 import { cssInterop } from "react-native-css-interop";
 
@@ -30,14 +30,16 @@ export default function PillarsScreen() {
   const cardSize = (width - 56 - 12) / 2; // padding + gap
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
 
+      {/* Top Section */}
+      <View className="px-7">
+        <OnboardingStepper totalSteps={4} currentStep={2} />
+      </View>
+
       {/* Main Content */}
-      <View
-        className="flex-1 px-7 pb-10 justify-between"
-        style={{ paddingTop: height * 0.15 }}
-      >
+      <View className="flex-1 px-7 pb-10 justify-between mt-6">
         {/* Header */}
         <OnboardingHeader
           title="What If Your"
@@ -95,7 +97,6 @@ export default function PillarsScreen() {
           entering={FadeInUp.delay(1000).duration(600).springify()}
           className="gap-5"
         >
-          <StepIndicator currentStep={2} activeColor="successGreen" />
           <OnboardingButton
             label="I Want This"
             variant="green"

@@ -2,12 +2,12 @@ import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import { View, useWindowDimensions } from "react-native";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import {
   OnboardingButton,
   OnboardingHeader,
   OnboardingSubtext,
-  StepIndicator,
+  OnboardingStepper,
 } from "./components";
 
 export default function WelcomeScreen() {
@@ -20,20 +20,19 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <View className="flex-1 bg-background px-7">
+    <View className="flex-1 bg-background px-7 pt-14">
       <StatusBar style="light" />
+
+      {/* Top Section */}
+      <OnboardingStepper totalSteps={4} currentStep={0} />
 
       {/* Content */}
       <View className="flex-1 justify-center gap-y-5">
         {/* Hero Text */}
-        {/* <Animated.View
-          entering={FadeInDown.delay(100).duration(800).springify()}
-        > */}
         <OnboardingHeader
           title={'"Just 5 More\n Minutes."'}
           subtitle="3 Hours Later..."
         />
-        {/* </Animated.View> */}
 
         {/* Subtext */}
         <OnboardingSubtext>
@@ -44,10 +43,9 @@ export default function WelcomeScreen() {
       {/* Bottom */}
       <Animated.View
         entering={FadeInUp.delay(800).duration(600).springify()}
-        className="px-7 gap-5"
+        className="gap-5"
         style={{ paddingBottom: height * 0.05 }}
       >
-        <StepIndicator currentStep={0} />
         <OnboardingButton onPress={handlePress} label="Yeah, That's Me" />
       </Animated.View>
     </View>

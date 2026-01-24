@@ -7,7 +7,7 @@ import {
   OnboardingHeader,
   OnboardingSubtext,
   OnboardingButton,
-  StepIndicator,
+  OnboardingStepper,
 } from "./components";
 
 export default function ProblemScreen() {
@@ -20,14 +20,16 @@ export default function ProblemScreen() {
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
 
+      {/* Top Section */}
+      <View className="px-7">
+        <OnboardingStepper totalSteps={4} currentStep={1} />
+      </View>
+
       {/* Main Content */}
-      <View
-        className="flex-1 px-7 pb-10 justify-between"
-        style={{ paddingTop: height * 0.15 }}
-      >
+      <View className="flex-1 px-7 pb-10 justify-between mt-10">
         {/* Header & Subtext */}
         <View className="flex-1 justify-center gap-y-5">
           <OnboardingHeader
@@ -49,7 +51,6 @@ export default function ProblemScreen() {
           entering={FadeInUp.delay(1300).duration(400).springify()}
           className="gap-5"
         >
-          <StepIndicator currentStep={1} activeColor="amber" />
           <OnboardingButton
             label="Show Me How"
             variant="amber"
