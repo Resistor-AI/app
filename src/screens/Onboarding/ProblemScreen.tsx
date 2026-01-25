@@ -39,7 +39,7 @@ export default function ProblemScreen() {
           />
 
           <OnboardingSubtext
-            animationDelay={900}
+            animationDelay={500}
             emphasis="You need a system that fights back."
           >
             Willpower alone can't fight a billion-dollar attention economy.
@@ -48,7 +48,7 @@ export default function ProblemScreen() {
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1300).duration(400).springify()}
+          entering={FadeInUp.delay(800).duration(400).springify()}
           className="gap-5"
         >
           <OnboardingButton
