@@ -1,17 +1,10 @@
 import RootNav from "./RootNav";
 import { AuthProvider } from "@/src/lib/auth-context";
 
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <AuthProvider>
-          <RootNav />
-        </AuthProvider>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+    <AuthProvider>
+      <RootNav />
+    </AuthProvider>
   );
 }
