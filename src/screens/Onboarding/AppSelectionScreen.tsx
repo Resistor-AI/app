@@ -4,7 +4,6 @@ import { View, Platform, ScrollView, Switch, Image, Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { getApps } from "@/modules/installed-apps";
 
 import { AppText } from "@/src/components/atoms/text";
 import {
@@ -33,14 +32,31 @@ export default function AppSelectionScreen() {
   }, []);
 
   const loadApps = async () => {
-    if (Platform.OS === "android") {
-      try {
-        const installedApps = await getApps();
-        setApps(installedApps);
-      } catch (error) {
-        console.error("Failed to load apps:", error);
-      }
-    }
+    // Mock data for stability until native module is fixed
+    const MOCK_APPS = [
+      {
+        label: "Instagram",
+        packageName: "com.instagram.android",
+        icon: undefined,
+      },
+      {
+        label: "TikTok",
+        packageName: "com.zhiliaoapp.musically",
+        icon: undefined,
+      },
+      { label: "Twitter", packageName: "com.twitter.android", icon: undefined },
+      {
+        label: "Facebook",
+        packageName: "com.facebook.katana",
+        icon: undefined,
+      },
+      {
+        label: "YouTube",
+        packageName: "com.google.android.youtube",
+        icon: undefined,
+      },
+    ];
+    setApps(MOCK_APPS);
     setIsLoading(false);
   };
 

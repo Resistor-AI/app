@@ -1,20 +1,11 @@
 import { useRouter } from "expo-router";
 import { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  useWindowDimensions,
-  Pressable,
-  Platform,
-  Linking,
-} from "react-native";
+import { View, useWindowDimensions, Platform, Linking } from "react-native";
 import * as Haptics from "expo-haptics";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
-import { BlurView } from "expo-blur";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { FadeIn, FadeInUp, ZoomIn } from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms/text";
-import { COLORS, PERMISSIONS, PermissionStatus } from "@/src/constants";
+import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
+import { PERMISSIONS } from "@/src/constants";
 import {
   OnboardingHeader,
   OnboardingButton,
@@ -23,6 +14,7 @@ import {
   PermissionGuideModal,
 } from "./components";
 import { PermissionKey, PermissionStates } from "@/src/types/PermissionsScreen";
+import { PermissionRow } from "./components/PermissionRow";
 
 export default function PermissionsScreen() {
   const router = useRouter();
@@ -208,20 +200,6 @@ export default function PermissionsScreen() {
     router.push("/(app)/(public)/(onboarding)/app-selection");
   };
 
-  const getPermissionIcon = (key: PermissionKey): string => {
-    const status = permissionStates[key];
-    if (status === "granted") return "✓";
-    if (status === "denied") return "✕";
-    return "→";
-  };
-
-  const getPermissionIconBg = (key: PermissionKey): string => {
-    const status = permissionStates[key];
-    if (status === "granted") return COLORS.deepPurple || "#5E5CE6";
-    if (status === "denied") return "#FF4444";
-    return `${COLORS.deepPurple || "#5E5CE6"}80`;
-  };
-
   const canContinue =
     permissionStates.notifications !== "pending" ||
     permissionStates.accessibility !== "pending";
@@ -253,68 +231,20 @@ export default function PermissionsScreen() {
 
           <View className="gap-4 mt-12">
             {PERMISSIONS.map((perm, index) => (
-              <Animated.View
+              <PermissionRow
                 key={perm.key}
-                entering={ZoomIn.delay(800 + index * 100)
-                  .duration(400)
-                  .springify()}
-              >
-                <Pressable
-                  onPress={() =>
-                    handlePermissionPress(perm.key as PermissionKey)
-                  }
-                  disabled={
-                    isRequesting ||
-                    permissionStates[perm.key as PermissionKey] === "granted"
-                  }
-                >
-                  <BlurView
-                    intensity={50}
-                    tint="dark"
-                    className="rounded-3xl overflow-hidden border border-white/15"
-                    style={{
-                      opacity:
-                        permissionStates[perm.key as PermissionKey] ===
-                        "granted"
-                          ? 0.7
-                          : 1,
-                    }}
-                  >
-                    <View className="flex-row items-center p-5 gap-4">
-                      <View
-                        className="size-16 rounded-2xl items-center justify-center"
-                        style={{ backgroundColor: `${COLORS.deepPurple}30` }}
-                      >
-                        <AppText className="text-4xl mt-1">{perm.icon}</AppText>
-                      </View>
-
-                      <View className="flex-1">
-                        <AppText variant="h5">{perm.title}</AppText>
-                        <AppText
-                          variant="body-sm"
-                          color="secondary"
-                          className="mt-1"
-                        >
-                          {perm.desc}
-                        </AppText>
-                      </View>
-
-                      <View
-                        className="size-8 rounded-full items-center justify-center"
-                        style={{
-                          backgroundColor: getPermissionIconBg(
-                            perm.key as PermissionKey,
-                          ),
-                        }}
-                      >
-                        <AppText className="text-base text-white">
-                          {getPermissionIcon(perm.key as PermissionKey)}
-                        </AppText>
-                      </View>
-                    </View>
-                  </BlurView>
-                </Pressable>
-              </Animated.View>
+                title={perm.title}
+                desc={perm.desc}
+                icon={perm.icon}
+                permissionKey={perm.key as PermissionKey}
+                status={permissionStates[perm.key as PermissionKey]}
+                index={index}
+                onPress={handlePermissionPress}
+                disabled={
+                  isRequesting ||
+                  permissionStates[perm.key as PermissionKey] === "granted"
+                }
+              />
             ))}
           </View>
         </View>
