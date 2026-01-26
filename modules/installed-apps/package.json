@@ -2,7 +2,10 @@
   "name": "installed-apps",
   "version": "1.0.0",
   "main": "index.ts",
-  "dependencies": {
+  "peerDependencies": {
+    "expo": "*"
+  },
+  "devDependencies": {
     "expo-modules-core": "~2.0.0"
   }
 }
