@@ -17,15 +17,13 @@ const VARIANT_COLORS: Record<ButtonVariant, { bg: string; text: string }> = {
   purple: { bg: "#5E5CE6", text: "text-textPrimary" }, // deepPurple
 };
 
-export interface OnboardingButtonProps extends Omit<PressableProps, "style"> {
+export interface OnboardingButtonProps extends PressableProps {
   /** Button text */
   label: string;
   /** Color variant */
   variant?: ButtonVariant;
   /** Show arrow indicator */
   showArrow?: boolean;
-  /** Optional className overrides */
-  className?: string;
 }
 
 /**
@@ -71,7 +69,13 @@ export function OnboardingButton({
       {...rest}
     >
       <Animated.View
-        style={[styles.container, { backgroundColor: bg }, animatedStyle]}
+        style={[
+          styles.container,
+          { backgroundColor: bg, marginTop: 32 },
+          animatedStyle,
+          // Allow overriding via style prop (e.g. for removing margin)
+          rest.style as any,
+        ]}
       >
         <AppText
           variant="body-lg"
@@ -98,6 +102,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 9999, // full
     gap: 12, // gap-3 (3 * 4 = 12px)
-    marginTop: 32, // mt-8 (8 * 4 = 32px)
   },
 });

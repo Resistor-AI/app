@@ -6,7 +6,6 @@ import {
   Pressable,
   Platform,
   Linking,
-  Alert,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import * as Notifications from "expo-notifications";
@@ -21,6 +20,7 @@ import {
   OnboardingButton,
   OnboardingSubtext,
   OnboardingStepper,
+  PermissionGuideModal,
 } from "./components";
 import { PermissionKey, PermissionStates } from "@/src/types/PermissionsScreen";
 
@@ -30,9 +30,26 @@ export default function PermissionsScreen() {
 
   const [permissionStates, setPermissionStates] = useState<PermissionStates>({
     notifications: "pending",
-    usage: "pending",
+    accessibility: "pending",
   });
   const [isRequesting, setIsRequesting] = useState(false);
+
+  // Modal State
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{
+    title: string;
+    subtitle?: string;
+    description: string | string[];
+    icon: string;
+    onAction: () => void;
+    actionLabel?: string;
+  }>({
+    title: "",
+    description: "",
+    icon: "⚙️",
+    onAction: () => {},
+    actionLabel: "Open Settings",
+  });
 
   // Check initial notification permission status
   useEffect(() => {
@@ -47,12 +64,31 @@ export default function PermissionsScreen() {
     }));
   };
 
+  const showModal = (
+    title: string,
+    description: string | string[],
+    icon: string,
+    onAction: () => void,
+    subtitle?: string,
+    actionLabel: string = "Open Settings",
+  ) => {
+    setModalConfig({
+      title,
+      description,
+      icon,
+      onAction,
+      subtitle,
+      actionLabel,
+    });
+    setModalVisible(true);
+  };
+
   const requestNotificationPermission = async () => {
     setIsRequesting(true);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     try {
-      const { status: existingStatus } =
+      const { status: existingStatus, canAskAgain } =
         await Notifications.getPermissionsAsync();
 
       if (existingStatus === "granted") {
@@ -63,54 +99,90 @@ export default function PermissionsScreen() {
         return;
       }
 
-      if (existingStatus === "denied") {
-        Alert.alert(
-          "Notifications Disabled",
-          "Please enable notifications in Settings to receive focus reminders.",
-          [
-            { text: "Cancel", style: "cancel" },
-            { text: "Open Settings", onPress: () => Linking.openSettings() },
-          ],
-        );
-        return;
-      }
+      // Soft Ask: Always show modal first to explain why
+      const isBlocked = existingStatus === "denied" && !canAskAgain;
 
-      const { status } = await Notifications.requestPermissionsAsync();
+      showModal(
+        isBlocked ? "Notifications Disabled" : "Enable Notifications",
+        [
+          "Remind you to maintain your focus streaks",
+          "Alert you when the Shield blocks apps",
+          "Keep you accountable to your daily goals",
+        ],
+        "🔔",
+        async () => {
+          const { status } = await Notifications.requestPermissionsAsync();
+          setPermissionStates((prev) => ({
+            ...prev,
+            notifications: status === "granted" ? "granted" : "denied",
+          }));
 
-      if (status === "granted") {
-        setPermissionStates((prev) => ({ ...prev, notifications: "granted" }));
-        await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success,
-        );
-      } else {
-        setPermissionStates((prev) => ({ ...prev, notifications: "denied" }));
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      }
+          if (status === "granted") {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success,
+            );
+            setModalVisible(false);
+          } else {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Error,
+            );
+            // If permission denied (or blocked), guide user to Settings
+            showModal(
+              "Notifications Disabled",
+              [
+                "Remind you to maintain your focus streaks",
+                "Alert you when the Shield blocks apps",
+                "Keep you accountable to your daily goals",
+              ],
+              "🔔",
+              () => {
+                Linking.openSettings();
+                setModalVisible(false);
+              },
+              "Please enable notifications in settings to continue:",
+              "Open Settings",
+            );
+          }
+        },
+        "Allow Resistor AI to send you critical updates that preserve your focus flow:",
+        "Turn On",
+      );
     } catch (error) {
       console.error("Error requesting notification permission:", error);
     } finally {
       setIsRequesting(false);
     }
   };
-
-  const requestUsageAccess = async () => {
+  const requestAccessibilityAccess = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    Alert.alert(
-      "Enable Screen Time",
+    const description =
       Platform.OS === "ios"
-        ? "To help block distracting apps, please enable Screen Time in Settings > Screen Time."
-        : "To help block distracting apps, please enable Usage Access in Settings > Apps > Special access > Usage access.",
-      [
-        { text: "Later", style: "cancel" },
-        {
-          text: "Open Settings",
-          onPress: async () => {
-            await Linking.openSettings();
-            setPermissionStates((prev) => ({ ...prev, usage: "granted" }));
-          },
-        },
-      ],
+        ? [
+            "Detects when you open distracting apps",
+            "Blocks them immediately to protect focus",
+            "Strictly used for focus protection per App Store policies",
+          ]
+        : [
+            "Detect exactly when distracting apps are opened",
+            "Instantly block them to keep you on track",
+            "We do NOT collect or share your personal data",
+          ];
+
+    showModal(
+      "Enable Accessibility",
+      description,
+      "🛡️",
+      async () => {
+        setModalVisible(false);
+        if (Platform.OS === "android") {
+          await Linking.sendIntent("android.settings.ACCESSIBILITY_SETTINGS");
+        } else {
+          await Linking.openSettings();
+        }
+        setPermissionStates((prev) => ({ ...prev, accessibility: "granted" }));
+      },
+      "Allow Resistor AI to actively shield your attention:",
     );
   };
 
@@ -122,8 +194,8 @@ export default function PermissionsScreen() {
         case "notifications":
           await requestNotificationPermission();
           break;
-        case "usage":
-          await requestUsageAccess();
+        case "accessibility":
+          await requestAccessibilityAccess();
           break;
       }
     },
@@ -132,7 +204,8 @@ export default function PermissionsScreen() {
 
   const handleContinue = async () => {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    router.push("/(app)/(public)/(auth)");
+    // Navigate to App Selection instead of Auth
+    router.push("/(app)/(public)/(onboarding)/app-selection");
   };
 
   const getPermissionIcon = (key: PermissionKey): string => {
@@ -151,7 +224,7 @@ export default function PermissionsScreen() {
 
   const canContinue =
     permissionStates.notifications !== "pending" ||
-    permissionStates.usage !== "pending";
+    permissionStates.accessibility !== "pending";
 
   return (
     <View className="flex-1 bg-background pt-14">
@@ -159,7 +232,7 @@ export default function PermissionsScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={3} />
+        <OnboardingStepper totalSteps={5} currentStep={3} />
       </View>
 
       <View className="flex-1 px-7 pb-10 justify-between mt-6">
@@ -257,6 +330,17 @@ export default function PermissionsScreen() {
           />
         </Animated.View>
       </View>
+
+      <PermissionGuideModal
+        visible={modalVisible}
+        title={modalConfig.title}
+        subtitle={modalConfig.subtitle}
+        description={modalConfig.description}
+        icon={modalConfig.icon}
+        onAction={modalConfig.onAction}
+        actionLabel={modalConfig.actionLabel}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }

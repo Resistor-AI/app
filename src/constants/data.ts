@@ -39,10 +39,10 @@ export const PERMISSIONS = [
     desc: "Gentle reminders to stay on track",
   },
   {
-    key: "usage" as const,
-    icon: "📱",
-    title: "Usage Access",
-    desc: "We'll help block distracting apps",
+    key: "accessibility" as const,
+    icon: "🔓",
+    title: "App Blocking",
+    desc: "Required to detect and block distracting apps",
   },
 ] as const;
 

@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pragmaticaweds.resistorai"
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +21,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.pragmaticaweds.resistorai"
+      "package": "com.pragmaticaweds.resistorai",
+      "permissions": ["android.permission.QUERY_ALL_PACKAGES"]
     },
     "web": {
       "output": "static",
@@ -41,7 +43,8 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      "./plugins/withAccessibilityService"
     ],
     "experiments": {
       "typedRoutes": true,
