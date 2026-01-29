@@ -12,16 +12,18 @@ import {
   OnboardingStepper,
 } from "./components";
 import { COLORS } from "@/src/constants";
+import InstalledApps, {
+  AppInfo,
+  AppCategory,
+} from "../../../modules/installed-apps";
 
-interface InstalledApp {
-  label: string;
-  packageName: string;
-  icon?: string; // Base64 string
+interface CategorizedApps {
+  [key: string]: AppInfo[];
 }
 
 export default function AppSelectionScreen() {
   const router = useRouter();
-  const [apps, setApps] = useState<InstalledApp[]>([]);
+  const [categorizedApps, setCategorizedApps] = useState<CategorizedApps>({});
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(
     new Set(),
   );
@@ -32,32 +34,33 @@ export default function AppSelectionScreen() {
   }, []);
 
   const loadApps = async () => {
-    // Mock data for stability until native module is fixed
-    const MOCK_APPS = [
-      {
-        label: "Instagram",
-        packageName: "com.instagram.android",
-        icon: undefined,
-      },
-      {
-        label: "TikTok",
-        packageName: "com.zhiliaoapp.musically",
-        icon: undefined,
-      },
-      { label: "Twitter", packageName: "com.twitter.android", icon: undefined },
-      {
-        label: "Facebook",
-        packageName: "com.facebook.katana",
-        icon: undefined,
-      },
-      {
-        label: "YouTube",
-        packageName: "com.google.android.youtube",
-        icon: undefined,
-      },
-    ];
-    setApps(MOCK_APPS);
-    setIsLoading(false);
+    try {
+      const installedApps = await InstalledApps.getAppList();
+
+      console.log(installedApps);
+
+      // Group apps by category
+      const grouped: CategorizedApps = {};
+      installedApps.forEach((app) => {
+        const category = app.category || "Unknown";
+        if (!grouped[category]) {
+          grouped[category] = [];
+        }
+        grouped[category].push(app);
+      });
+
+      setCategorizedApps(grouped);
+
+      // Also fetch icons for displayed apps if needed, but for now we rely on the list
+      // Note: If icon fetching is heavy, we might want to do it lazily or in batches
+      // The current getAppList might not return icons directly if the native module doesn't include them in the list object
+      // (Checking native module: getAppList returns label, packageName, category. getAppIcon is separate)
+    } catch (error) {
+      console.error("Failed to load apps", error);
+      Alert.alert("Error", "Could not load installed apps.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleApp = (packageName: string) => {
@@ -123,39 +126,66 @@ export default function AppSelectionScreen() {
             {isLoading ? (
               <AppText className="text-center mt-10">Loading apps...</AppText>
             ) : (
-              <View className="gap-3 pb-20">
-                {apps.map((app) => {
-                  const isSelected = selectedPackages.has(app.packageName);
-                  return (
-                    <Animated.View key={app.packageName} entering={FadeIn}>
-                      <View
-                        className={`flex-row items-center p-4 rounded-xl border ${
-                          isSelected
-                            ? "bg-amber-500/10 border-amber-500"
-                            : "bg-white/5 border-white/10"
-                        }`}
-                      >
-                        {app.icon && (
-                          <Image
-                            source={{
-                              uri: `data:image/png;base64,${app.icon}`,
-                            }}
-                            style={{ width: 40, height: 40, borderRadius: 8 }}
-                          />
-                        )}
-                        <View className="flex-1 ml-3">
-                          <AppText variant="body">{app.label}</AppText>
-                        </View>
-                        <Switch
-                          value={isSelected}
-                          onValueChange={() => toggleApp(app.packageName)}
-                          trackColor={{ false: "#3e3e3e", true: COLORS.amber }}
-                          thumbColor={"#fff"}
-                        />
-                      </View>
-                    </Animated.View>
-                  );
-                })}
+              <View className="gap-6 pb-20">
+                {Object.entries(categorizedApps).map(([category, apps]) => (
+                  <View key={category} className="gap-3">
+                    <AppText
+                      variant="h4"
+                      className="mb-2 text-white/50 uppercase text-xs tracking-wider"
+                    >
+                      {category}
+                    </AppText>
+
+                    {apps.map((app) => {
+                      const isSelected = selectedPackages.has(app.packageName);
+                      // TODO: Fetch icon asynchronously if needed, for performance we skip base64 icon in list for now unless cached
+
+                      return (
+                        <Animated.View key={app.packageName} entering={FadeIn}>
+                          <View
+                            className={`flex-row items-center p-4 rounded-xl border ${
+                              isSelected
+                                ? "bg-amber-500/10 border-amber-500"
+                                : "bg-white/5 border-white/10"
+                            }`}
+                          >
+                            {/* Placeholder for icon - implementing getAppIcon in list would require async loading per item */}
+                            <View className="w-10 h-10 rounded-lg bg-white/10 items-center justify-center">
+                              <AppText className="text-xl">
+                                {app.label.charAt(0)}
+                              </AppText>
+                            </View>
+
+                            <View className="flex-1 ml-3">
+                              <AppText variant="body">{app.label}</AppText>
+                              <AppText
+                                variant="caption"
+                                className="text-white/40 text-xs"
+                              >
+                                {app.packageName}
+                              </AppText>
+                            </View>
+                            <Switch
+                              value={isSelected}
+                              onValueChange={() => toggleApp(app.packageName)}
+                              trackColor={{
+                                false: "#3e3e3e",
+                                true: COLORS.amber,
+                              }}
+                              thumbColor={"#fff"}
+                            />
+                          </View>
+                        </Animated.View>
+                      );
+                    })}
+                  </View>
+                ))}
+
+                {Object.keys(categorizedApps).length === 0 && (
+                  <AppText className="text-center text-white/50">
+                    No apps found.
+                  </AppText>
+                )}
               </View>
             )}
           </ScrollView>

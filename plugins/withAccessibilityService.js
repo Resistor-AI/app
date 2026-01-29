@@ -6,7 +6,8 @@ const {
 const fs = require("fs");
 const path = require("path");
 
-const SERVICE_NAME = "ResistorAccessibilityService";
+const SERVICE_NAME = "FocusAccessibilityService";
+const SERVICE_PACKAGE = "expo.modules.installedapps";
 
 const withAccessibilityServiceManifest = (config) => {
   return withAndroidManifest(config, async (config) => {
@@ -17,7 +18,7 @@ const withAccessibilityServiceManifest = (config) => {
       mainApplication.service = [];
     }
 
-    const serviceName = `${config.android.package}.${SERVICE_NAME}`;
+    const serviceName = `${SERVICE_PACKAGE}.${SERVICE_NAME}`;
 
     // Check if service already exists
     const existingService = mainApplication.service.find(
@@ -133,48 +134,14 @@ const withAccessibilityServiceConfig = (config) => {
   ]);
 };
 
-// Also need to create the Java class for the service!
-const withAccessibilityServiceJava = (config) => {
-  return withDangerousMod(config, [
-    "android",
-    async (config) => {
-      const packagePath = config.android.package.replace(/\./g, "/");
-      const javaDir = path.join(
-        config.modRequest.platformProjectRoot,
-        `app/src/main/java/${packagePath}`,
-      );
-
-      await fs.promises.mkdir(javaDir, { recursive: true });
-      const servicePath = path.join(javaDir, `${SERVICE_NAME}.java`);
-
-      const javaContent = `package ${config.android.package};
-
-import android.accessibilityservice.AccessibilityService;
-import android.view.accessibility.AccessibilityEvent;
-
-public class ${SERVICE_NAME} extends AccessibilityService {
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        // App blocking logic will go here later.
-        // For now, this service just needs to exist to be enabled in settings.
-    }
-
-    @Override
-    public void onInterrupt() {
-    }
-}
-`;
-      await fs.promises.writeFile(servicePath, javaContent);
-      return config;
-    },
-  ]);
-};
+// Note: FocusAccessibilityService is now provided by the installed-apps local module
+// at expo.modules.installedapps.FocusAccessibilityService
 
 const withAccessibilityService = (config) => {
   config = withAccessibilityServiceManifest(config);
   config = withAccessibilityServiceConfig(config);
   config = withAccessibilityServiceStrings(config);
-  config = withAccessibilityServiceJava(config);
+  // Service class is provided by installed-apps module, no need to generate Java here
   return config;
 };
 
