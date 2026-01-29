@@ -18,11 +18,7 @@ export const SelectableAppItem = memo(({ app, isSelected, onToggle }: Props) => 
   return (
     <Animated.View entering={FadeIn}>
       <View
-        className={`flex-row items-center p-4 pl-0 rounded-xl border mb-3 ${
-          isSelected
-            ? "bg-amber-500/10 border-amber-500"
-            : "bg-white/5 border-white/10"
-        }`}
+        className="flex-row items-center p-4 pl-0 rounded-xl border mb-3 bg-white/5 border-white/10"
       >
         {icon ? (
           <Image 

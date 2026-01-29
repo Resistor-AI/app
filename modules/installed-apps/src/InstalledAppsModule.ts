@@ -50,6 +50,20 @@ interface InstalledAppsModuleType {
   setBlockedApps(packageNames: string[]): void;
 
   /**
+   * Set the Working Hours (e.g., 9:00 AM to 5:00 PM today)
+   * @param startTime - Unix timestamp (ms) for start
+   * @param endTime - Unix timestamp (ms) for end
+   */
+  setSchedule(startTime: number, endTime: number): void;
+
+  /**
+   * Snooze a blocked app for a duration (The Reward)
+   * @param packageName - The package name to snooze
+   * @param durationMinutes - Duration in minutes
+   */
+  snoozeApp(packageName: string, durationMinutes: number): void;
+
+  /**
    * Get the currently blocked apps list
    * @returns Array of blocked package names
    */

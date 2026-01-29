@@ -25,24 +25,52 @@ class InstalledAppsModule : Module() {
     override fun definition() = ModuleDefinition {
         Name("InstalledApps")
 
-        // Get list of installed user apps with metadata
-        AsyncFunction("getAppList") {
+        Function("getAppList") {
             getInstalledApps()
         }
 
-        // Get Base64 encoded icon for a specific package
-        AsyncFunction("getAppIcon") { packageName: String ->
+        Function("getAppIcon") { packageName: String ->
             getAppIconBase64(packageName)
         }
 
-        // Set the list of blocked app package names
-        Function("setBlockedApps") { packageNames: List<String> ->
-            saveBlockedApps(packageNames)
+        // Function to Save Blocked Apps from React Native
+        Function("setBlockedApps") { apps: List<String> ->
+            val context = appContext.reactContext ?: return@Function
+            val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+            
+            // Save as a Set of Strings
+            prefs.edit().putStringSet("blocked_packages", apps.toSet()).apply()
         }
 
-        // Get the list of currently blocked apps
+        // 1. Set the Working Hours (e.g., 9:00 AM to 5:00 PM today)
+        // Pass in Unix Timestamps (milliseconds)
+        Function("setSchedule") { startTime: Double, endTime: Double ->
+            val context = appContext.reactContext ?: return@Function
+            val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+            
+            prefs.edit()
+                .putLong("schedule_start", startTime.toLong())
+                .putLong("schedule_end", endTime.toLong())
+                .apply()
+        }
+
+        // 2. Snooze Logic (The Reward)
+        // Called when user solves a challenge. Unblocks specific app for X minutes.
+        Function("snoozeApp") { packageName: String, durationMinutes: Int ->
+            val context = appContext.reactContext ?: return@Function
+            val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+            
+            val unblockTime = System.currentTimeMillis() + (durationMinutes * 60 * 1000)
+            prefs.edit().putLong("snooze_$packageName", unblockTime).apply()
+        }
+
+        // Function to Get Blocked Apps (to restore UI state)
         Function("getBlockedApps") {
-            getBlockedApps()
+            val context = appContext.reactContext ?: return@Function emptyList<String>()
+            val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+            
+            val blockedSet = prefs.getStringSet("blocked_packages", emptySet()) ?: emptySet()
+            return@Function blockedSet.toList()
         }
     }
 

@@ -8,6 +8,7 @@ import { AppText } from "@/src/components/atoms/text";
 import { OnboardingHeader, OnboardingButton, OnboardingStepper } from "./components";
 import { SelectableAppItem } from "./components/SelectableAppItem";
 import { useInstalledApps } from "@/src/hooks/useInstalledApps";
+import InstalledApps from "../../../modules/installed-apps";
 
 export default function AppSelectionScreen() {
   const router = useRouter();
@@ -26,7 +27,12 @@ export default function AppSelectionScreen() {
 
   const handleContinue = async () => {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    console.log("Blocked:", Array.from(selectedPackages));
+    
+    // Just save the list for now. The session starts on the next screen/timer screen.
+    const selectedArray = Array.from(selectedPackages);
+    InstalledApps.setBlockedApps(selectedArray);
+
+    console.log("Blocking apps saved:", selectedArray);
     router.push("/(app)/(public)/(auth)");
   };
 

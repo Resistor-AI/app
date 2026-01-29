@@ -20,3 +20,20 @@
  */
 
 export { default, AppInfo, AppCategory } from "./src/InstalledAppsModule";
+import InstalledAppsModule from "./src/InstalledAppsModule";
+
+export function setBlockedApps(apps: string[]): void {
+  return InstalledAppsModule.setBlockedApps(apps);
+}
+
+export function setSchedule(startTime: number, endTime: number): void {
+  return InstalledAppsModule.setSchedule(startTime, endTime);
+}
+
+export function snoozeApp(packageName: string, durationMinutes: number): void {
+  return InstalledAppsModule.snoozeApp(packageName, durationMinutes);
+}
+
+export function getBlockedApps(): string[] {
+  return InstalledAppsModule.getBlockedApps();
+}
