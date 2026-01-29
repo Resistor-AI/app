@@ -22,7 +22,9 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.pragmaticaweds.resistorai",
-      "permissions": ["android.permission.QUERY_ALL_PACKAGES"]
+      "permissions": [
+        "android.permission.QUERY_ALL_PACKAGES"
+      ]
     },
     "web": {
       "output": "static",
@@ -44,7 +46,8 @@
         }
       ],
       "expo-font",
-      "./plugins/withAccessibilityService"
+      "./plugins/withAccessibilityService",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
