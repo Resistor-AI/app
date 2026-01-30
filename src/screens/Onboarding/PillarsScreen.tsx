@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { BlurView } from "expo-blur";
 import Animated, { FadeInUp, ZoomIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
-import { COLORS, PILLARS } from "@/src/constants";
+import { PILLARS } from "@/src/constants";
 import {
   OnboardingHeader,
   OnboardingButton,
@@ -24,7 +24,8 @@ export default function PillarsScreen() {
 
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push("./permissions");
+    // New Flow: Pillars -> Auth -> UserDetails -> Permissions
+    router.push("/(app)/(public)/(auth)");
   };
 
   const cardSize = (width - 56 - 12) / 2; // padding + gap

@@ -9,6 +9,7 @@ import { OnboardingHeader, OnboardingButton, OnboardingStepper } from "./compone
 import { SelectableAppItem } from "./components/SelectableAppItem";
 import { useInstalledApps } from "@/src/hooks/useInstalledApps";
 import InstalledApps from "../../../modules/installed-apps";
+import { useOnboardingStore } from "@/src/store/onboardingStore";
 
 export default function AppSelectionScreen() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function AppSelectionScreen() {
     });
   }, []);
 
+  const { completeOnboarding } = useOnboardingStore();
+
   const handleContinue = async () => {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     
@@ -32,8 +35,9 @@ export default function AppSelectionScreen() {
     const selectedArray = Array.from(selectedPackages);
     InstalledApps.setBlockedApps(selectedArray);
 
-    console.log("Blocking apps saved:", selectedArray);
-    router.push("/(app)/(public)/(auth)");
+    // console.log("Blocking apps saved:", selectedArray);
+    completeOnboarding();
+    router.replace("/(app)/(protected)");
   };
 
   return (
@@ -81,6 +85,11 @@ export default function AppSelectionScreen() {
                 stickySectionHeadersEnabled={true}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
+                // Performance optimizations
+                initialNumToRender={15}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                removeClippedSubviews={Platform.OS === 'android'} // Crucial for large lists on Android
               />
             )}
           </View>

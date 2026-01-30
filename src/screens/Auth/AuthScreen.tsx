@@ -16,13 +16,13 @@ export default function AuthScreen() {
   const handleGoogleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     // TODO: Implement Google Sign In
-    router.push("/(app)/(public)/(auth)/userinfo");
+    router.push("/(app)/(public)/(onboarding)/user-details");
   };
 
   const handleAppleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     // TODO: Implement Apple Sign In
-    router.push("/(app)/(public)/(auth)/userinfo");
+    router.push("/(app)/(public)/(onboarding)/user-details");
   };
 
   return (
