@@ -24,7 +24,7 @@ export default function WelcomeScreen() {
       <StatusBar style="light" />
 
       {/* Top Section */}
-      <OnboardingStepper totalSteps={4} currentStep={0} />
+      <OnboardingStepper totalSteps={6} currentStep={0} />
 
       {/* Content */}
       <View className="flex-1 justify-center gap-y-5">

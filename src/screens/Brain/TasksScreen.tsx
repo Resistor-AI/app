@@ -9,7 +9,7 @@ import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 
 import { MOCK_SCHEDULE } from "@/src/data/TasksScreen";
-import { EnergyChunk } from "@/src/types/TasksScreen";
+import { EnergyChunk } from "@/src/types/Brain/TasksScreen";
 
 export default function TasksScreen() {
   const { top } = useSafeAreaInsets();

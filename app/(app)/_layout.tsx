@@ -1,17 +1,23 @@
 import { Stack } from "expo-router";
+import { useAuthStore } from "@/src/store/authStore";
+import { useOnboardingStore } from "@/src/store/onboardingStore";
 
 const AppLayout = () => {
-  const user = false;
+  const { isAuthenticated } = useAuthStore();
+  const { hasCompletedOnboarding } = useOnboardingStore();
+
+  const isReady = isAuthenticated && hasCompletedOnboarding;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!!user}>
-        <Stack.Screen name="(protected)" />
-      </Stack.Protected>
-
-      <Stack.Protected guard={!user}>
-        <Stack.Screen name="(public)" />
-      </Stack.Protected>
+      <Stack.Screen 
+        name="(protected)" 
+        redirect={!isReady} 
+      />
+      <Stack.Screen 
+        name="(public)" 
+        redirect={isReady} 
+      />
     </Stack>
   );
 };

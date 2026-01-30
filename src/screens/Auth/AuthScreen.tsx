@@ -9,19 +9,24 @@ import { AppText } from "@/src/components/atoms/text";
 import { COLORS } from "@/src/constants";
 import { RollingText } from "./components";
 
+import { useAuthStore } from "@/src/store/authStore";
+
 export default function AuthScreen() {
   const router = useRouter();
   const { bottom, top } = useSafeAreaInsets();
+  const { login } = useAuthStore();
 
   const handleGoogleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     // TODO: Implement Google Sign In
+    login({ email: "google-user@example.com" }); // Mock login
     router.push("/(app)/(public)/(onboarding)/user-details");
   };
 
   const handleAppleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     // TODO: Implement Apple Sign In
+    login({ email: "apple-user@example.com" }); // Mock login
     router.push("/(app)/(public)/(onboarding)/user-details");
   };
 

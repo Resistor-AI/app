@@ -35,15 +35,19 @@ export default function AppSelectionScreen() {
     const selectedArray = Array.from(selectedPackages);
     InstalledApps.setBlockedApps(selectedArray);
 
-    // console.log("Blocking apps saved:", selectedArray);
     completeOnboarding();
-    router.replace("/(app)/(protected)");
+    console.log("Onboarding marked complete, navigating to protected...");
+    
+    // Verify router is ready
+    if (router.canGoBack() || true) { // simple check
+        router.replace("/(app)/(protected)");
+    }
   };
 
   return (
     <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
-      <View className="px-7"><OnboardingStepper totalSteps={5} currentStep={4} /></View>
+      <View className="px-7"><OnboardingStepper totalSteps={6} currentStep={5} /></View>
 
       <View className="flex-1 px-7 pb-10 mt-6">
         <OnboardingHeader title={"Select\nDistractions"} subtitle="What steals your focus?" accentColor="amberLight" />

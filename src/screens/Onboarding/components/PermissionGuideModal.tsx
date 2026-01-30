@@ -8,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 import { OnboardingButton } from "./OnboardingButton";
-import { PermissionGuideModalProps } from "@/src/types/PermissionsScreen";
+import { PermissionGuideModalProps } from "@/src/types/Onboarding/PermissionsScreen";
 
 export function PermissionGuideModal({
   visible,

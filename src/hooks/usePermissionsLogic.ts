@@ -7,15 +7,30 @@ import {
   PermissionKey,
   PermissionStates,
   ModalConfig,
-} from "@/src/types/PermissionsScreen";
+} from "@/src/types/Onboarding/PermissionsScreen";
+
+import { useNativePermissions } from "@/src/hooks/useNativePermissions";
 
 export function usePermissionsLogic() {
   const router = useRouter();
+  const { data: nativePermissions } = useNativePermissions();
 
   const [permissionStates, setPermissionStates] = useState<PermissionStates>({
     notifications: "pending",
     accessibility: "pending",
   });
+  
+  // Sync native permissions to local state
+  useEffect(() => {
+    if (nativePermissions) {
+      setPermissionStates(prev => ({
+        ...prev,
+        notifications: nativePermissions.notifications ? "granted" : "pending",
+        accessibility: nativePermissions.accessibility ? "granted" : "pending"
+      }));
+    }
+  }, [nativePermissions]);
+
   const [isRequesting, setIsRequesting] = useState(false);
 
   // Modal State
@@ -27,19 +42,6 @@ export function usePermissionsLogic() {
     onAction: () => {},
     actionLabel: "Open Settings",
   });
-
-  // Check initial notification permission status
-  useEffect(() => {
-    checkNotificationStatus();
-  }, []);
-
-  const checkNotificationStatus = async () => {
-    const { status } = await Notifications.getPermissionsAsync();
-    setPermissionStates((prev) => ({
-      ...prev,
-      notifications: status === "granted" ? "granted" : "pending",
-    }));
-  };
 
   const showModal = (
     title: string,
@@ -158,7 +160,7 @@ export function usePermissionsLogic() {
         } else {
           await Linking.openSettings();
         }
-        setPermissionStates((prev) => ({ ...prev, accessibility: "granted" }));
+        // The hook (useNativePermissions) will auto-refetch when app comes to foreground
       },
       "Allow Resistor AI to actively shield your attention:",
     );

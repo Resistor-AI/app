@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, View, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,24 +7,7 @@ import Animated, {
 import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
-
-type ButtonVariant = "blue" | "amber" | "green" | "purple";
-
-const VARIANT_COLORS: Record<ButtonVariant, { bg: string; text: string }> = {
-  blue: { bg: "#0A84FF", text: "text-textPrimary" }, // electricBlue
-  amber: { bg: "#F59E0B", text: "text-background" }, // amber
-  green: { bg: "#30D158", text: "text-background" }, // successGreen
-  purple: { bg: "#5E5CE6", text: "text-textPrimary" }, // deepPurple
-};
-
-export interface OnboardingButtonProps extends PressableProps {
-  /** Button text */
-  label: string;
-  /** Color variant */
-  variant?: ButtonVariant;
-  /** Show arrow indicator */
-  showArrow?: boolean;
-}
+import { OnboardingButtonProps, VARIANT_COLORS } from "@/src/types/Onboarding/components";
 
 /**
  * OnboardingButton - Primary CTA button for onboarding screens

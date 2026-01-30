@@ -5,7 +5,7 @@ import { ThemedText } from "@/src/components/molecules/themed-text";
 import { ThemedView } from "@/src/components/molecules/themed-view";
 import { IconSymbol } from "@/src/components/atoms/icon-symbol";
 import { Colors } from "@/src/lib/theme";
-import { useColorScheme } from "@/src/lib/hooks/use-color-scheme";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 
 export function Collapsible({
   children,

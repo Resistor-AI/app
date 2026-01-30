@@ -37,3 +37,12 @@ export function snoozeApp(packageName: string, durationMinutes: number): void {
 export function getBlockedApps(): string[] {
   return InstalledAppsModule.getBlockedApps();
 }
+
+export interface PermissionStatus {
+  accessibility: boolean;
+  notifications: boolean;
+}
+
+export function checkPermissions(): Promise<PermissionStatus> {
+  return InstalledAppsModule.checkPermissions();
+}

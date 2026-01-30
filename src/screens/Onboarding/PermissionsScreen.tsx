@@ -9,9 +9,9 @@ import {
   OnboardingStepper,
   PermissionGuideModal,
 } from "./components";
-import { PermissionKey } from "@/src/types/PermissionsScreen";
 import { usePermissionsLogic } from "@/src/hooks/usePermissionsLogic";
 import { PermissionRow } from "./components/PermissionRow";
+import { PermissionKey } from "@/src/types/Onboarding/PermissionsScreen";
 
 export default function PermissionsScreen() {
   const {
@@ -31,7 +31,7 @@ export default function PermissionsScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={5} currentStep={3} />
+        <OnboardingStepper totalSteps={6} currentStep={4} />
       </View>
 
       <View className="flex-1 px-7 pb-10 justify-between mt-6">

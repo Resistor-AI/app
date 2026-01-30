@@ -14,6 +14,9 @@ import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
+import android.provider.Settings
+import android.text.TextUtils
+import androidx.core.app.NotificationManagerCompat
 
 class InstalledAppsModule : Module() {
     
@@ -71,6 +74,42 @@ class InstalledAppsModule : Module() {
             
             val blockedSet = prefs.getStringSet("blocked_packages", emptySet()) ?: emptySet()
             return@Function blockedSet.toList()
+        }
+
+        Function("checkPermissions") {
+            val context = appContext.reactContext ?: return@Function mapOf("accessibility" to false, "notifications" to false)
+            
+            // 1. Check Accessibility Permission
+            var accessibilityEnabled = false
+            // Construct the service ID: "com.package.name/full.class.name"
+            val expectedServiceName = "${context.packageName}/${expo.modules.installedapps.FocusAccessibilityService::class.java.canonicalName}"
+            
+            val enabledServices = Settings.Secure.getString(
+                context.contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            )
+            
+            if (!TextUtils.isEmpty(enabledServices)) {
+                val colonSplitter = TextUtils.SimpleStringSplitter(':')
+                colonSplitter.setString(enabledServices)
+                while (colonSplitter.hasNext()) {
+                    val componentName = colonSplitter.next()
+                    // Check exact match or partial match to be safe
+                    if (componentName.equals(expectedServiceName, ignoreCase = true) || 
+                        componentName.contains("FocusAccessibilityService")) {
+                        accessibilityEnabled = true
+                        break
+                    }
+                }
+            }
+
+            // 2. Check Notification Permission
+            val notificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+
+            return@Function mapOf(
+                "accessibility" to accessibilityEnabled,
+                "notifications" to notificationEnabled
+            )
         }
     }
 

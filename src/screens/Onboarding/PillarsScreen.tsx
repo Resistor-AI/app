@@ -20,7 +20,7 @@ cssInterop(BlurView, {
 
 export default function PillarsScreen() {
   const router = useRouter();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -36,15 +36,15 @@ export default function PillarsScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={2} />
+        <OnboardingStepper totalSteps={6} currentStep={2} />
       </View>
 
       {/* Main Content */}
       <View className="flex-1 px-7 pb-10 justify-between mt-6">
         {/* Header */}
         <OnboardingHeader
-          title="What If Your"
-          subtitle={"Device Fought\nFor You?"}
+          title="What If 🤔"
+          subtitle={"Your Device Fought For You?"}
           accentColor="successGreen"
         />
 

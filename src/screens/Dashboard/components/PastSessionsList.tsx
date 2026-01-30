@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { CheckCircle2, Shield } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 
-import { PastSessionsListProps } from "@/src/types/DashboardScreen";
+import { PastSessionsListProps } from "@/src/types/Dashboard";
 
 export function PastSessionsList({ sessions }: PastSessionsListProps) {
   return (

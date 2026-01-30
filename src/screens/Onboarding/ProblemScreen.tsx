@@ -25,7 +25,7 @@ export default function ProblemScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={1} />
+        <OnboardingStepper totalSteps={6} currentStep={1} />
       </View>
 
       {/* Main Content */}

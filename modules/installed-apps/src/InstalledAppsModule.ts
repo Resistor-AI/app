@@ -67,6 +67,12 @@ interface InstalledAppsModuleType {
    * Get the currently blocked apps list
    * @returns Array of blocked package names
    */
+  /**
+   * Check if permissions are granted
+   * @returns Promise resolving to permission status
+   */
+  checkPermissions(): Promise<{ accessibility: boolean; notifications: boolean }>;
+
   getBlockedApps(): string[];
 }
 

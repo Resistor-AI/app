@@ -3,16 +3,10 @@ import { View, Switch, Image } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { AppText } from '@/src/components/atoms/text';
 import { COLORS } from '@/src/constants';
-import { AppInfo } from '../../../../modules/installed-apps';
 import { useAppIcon } from '@/src/hooks/useInstalledApps';
+import { SelectableAppItemProps } from '@/src/types/Onboarding/AppSelectionScreen';
 
-interface Props {
-  app: AppInfo;
-  isSelected: boolean;
-  onToggle: (packageName: string) => void;
-}
-
-export const SelectableAppItem = memo(({ app, isSelected, onToggle }: Props) => {
+export const SelectableAppItem = memo(({ app, isSelected, onToggle }: SelectableAppItemProps) => {
   const { data: icon } = useAppIcon(app.packageName);
 
   return (

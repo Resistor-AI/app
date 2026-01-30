@@ -1,17 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { zustandStorage } from "./storage";
-
-interface OnboardingState {
-  name: string;
-  description: string;
-  hasCompletedOnboarding: boolean;
-  
-  setName: (name: string) => void;
-  setDescription: (description: string) => void;
-  completeOnboarding: () => void;
-  resetOnboarding: () => void;
-}
+import { OnboardingState } from "@/src/types/store";
 
 export const useOnboardingStore = create<OnboardingState>()(
   persist(

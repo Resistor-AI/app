@@ -3,18 +3,7 @@ import { BlurView } from "expo-blur";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 import { COLORS } from "@/src/constants";
-import { PermissionKey } from "@/src/types/PermissionsScreen";
-
-interface PermissionRowProps {
-  title: string;
-  desc: string;
-  icon: string;
-  permissionKey: PermissionKey;
-  status: "granted" | "denied" | "pending";
-  index: number;
-  onPress: (key: PermissionKey) => void;
-  disabled: boolean;
-}
+import { PermissionRowProps } from "@/src/types/Onboarding/PermissionsScreen";
 
 export function PermissionRow({
   title,

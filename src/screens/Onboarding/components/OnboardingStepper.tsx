@@ -1,10 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-
-interface OnboardingStepperProps {
-  totalSteps: number;
-  currentStep: number;
-}
+import { OnboardingStepperProps } from "@/src/types/Onboarding/components";
 
 export function OnboardingStepper({
   totalSteps,

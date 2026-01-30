@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Shield, ArrowUpRight, Smartphone, Flame } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 
-import { StatsCardProps } from "@/src/types/DashboardScreen";
+import { StatsCardProps } from "@/src/types/Dashboard";
 
 export function StatsCard({ user }: StatsCardProps) {
   const [focusHours, focusMinutes] = user.focusSaved.split(" ");

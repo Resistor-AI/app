@@ -54,7 +54,7 @@ export default function SetupCompleteScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={4} />
+        <OnboardingStepper totalSteps={6} currentStep={6} />
       </View>
 
       {/* Main Content */}

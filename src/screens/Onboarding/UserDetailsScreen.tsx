@@ -40,7 +40,7 @@ export default function UserDetailsScreen() {
     <View className="flex-1 bg-background pt-14">
       <StatusBar style="light" />
       <View className="px-7">
-        <OnboardingStepper totalSteps={5} currentStep={3} />
+        <OnboardingStepper totalSteps={6} currentStep={3} />
       </View>
 
       <KeyboardAvoidingView 
@@ -53,8 +53,9 @@ export default function UserDetailsScreen() {
           contentContainerStyle={{ paddingBottom: 40 }}
         >
           <OnboardingHeader
-            title="Let's Get to\nKnow You"
+            title={"Let's Get to Know\n You 👋"}
             subtitle="To personalize your experience."
+            subTitleClassName="text-4xl"
             accentColor="amberLight"
           />
 
@@ -90,13 +91,13 @@ export default function UserDetailsScreen() {
                     }}
                     className={`px-5 py-3 rounded-xl border ${
                       localDesc === role
-                        ? "bg-amber-500/20 border-amber-500"
+                        ? "bg-amber/20 border-amber"
                         : "bg-white/5 border-white/10"
                     }`}
                   >
                     <AppText
                       className={`${
-                        localDesc === role ? "text-amber-500" : "text-white/70"
+                        localDesc === role ? "text-amber" : "text-white/70"
                       } font-outfit-medium`}
                     >
                       {role}

@@ -8,17 +8,11 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
-import {} from "react-native-worklets";
 import { AppText } from "@/src/components/atoms/text";
+import { RollingTextProps } from "@/src/types/Auth/components";
 
 const WORDS = ["Focus", "Energy", "Life", "Brain", "Work"];
 const CYCLE_DURATION = 2000; // ms per word
-
-interface RollingTextProps {
-  prefix?: string;
-  words?: string[];
-  accentColor?: string;
-}
 
 export function RollingText({
   words = WORDS,
