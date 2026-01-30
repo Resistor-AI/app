@@ -34,26 +34,29 @@ export function RollingText({
         duration: 300,
         easing: Easing.inOut(Easing.ease),
       });
-      opacity.value = withTiming(0, { duration: 300 });
-
-      // Switch word and animate in
-      setTimeout(() => {
-        runOnJS(nextWord)();
-        translateY.value = 30;
-        opacity.value = 0;
-
-        setTimeout(() => {
-          translateY.value = withTiming(0, {
-            duration: 300,
-            easing: Easing.out(Easing.ease),
-          });
-          opacity.value = withTiming(1, { duration: 300 });
-        }, 50);
-      }, 300);
+      opacity.value = withTiming(0, { duration: 300 }, (finished) => {
+        if (finished) {
+          runOnJS(nextWord)();
+        }
+      });
     }, CYCLE_DURATION);
 
     return () => clearInterval(interval);
   }, []);
+
+  // Animate in when word changes
+  useEffect(() => {
+    // Reset immediately
+    translateY.value = 30;
+    opacity.value = 0;
+
+    // Animate to visible
+    translateY.value = withTiming(0, {
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+    });
+    opacity.value = withTiming(1, { duration: 300 });
+  }, [currentIndex]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],

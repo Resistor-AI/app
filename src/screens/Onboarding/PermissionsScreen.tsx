@@ -2,13 +2,11 @@ import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { PERMISSIONS } from "@/src/constants";
-import {
-  OnboardingHeader,
-  OnboardingButton,
-  OnboardingSubtext,
-  OnboardingStepper,
-  PermissionGuideModal,
-} from "./components";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingSubtext } from "./components/OnboardingSubtext";
+import { OnboardingStepper } from "./components/OnboardingStepper";
+import { PermissionGuideModal } from "./components/PermissionGuideModal";
 import { usePermissionsLogic } from "@/src/hooks/usePermissionsLogic";
 import { PermissionRow } from "./components/PermissionRow";
 import { PermissionKey } from "@/src/types/Onboarding/PermissionsScreen";

@@ -3,12 +3,10 @@ import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import { View, useWindowDimensions } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import {
-  OnboardingButton,
-  OnboardingHeader,
-  OnboardingSubtext,
-  OnboardingStepper,
-} from "./components";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingSubtext } from "./components/OnboardingSubtext";
+import { OnboardingStepper } from "./components/OnboardingStepper";
 
 export default function WelcomeScreen() {
   const router = useRouter();

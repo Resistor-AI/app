@@ -6,12 +6,11 @@ import { BlurView } from "expo-blur";
 import Animated, { FadeInUp, ZoomIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 import { PILLARS } from "@/src/constants";
-import {
-  OnboardingHeader,
-  OnboardingButton,
-  OnboardingStepper,
-} from "./components";
+
 import { cssInterop } from "react-native-css-interop";
+import { OnboardingStepper } from "./components/OnboardingStepper";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingButton } from "./components/OnboardingButton";
 
 // Ensure BlurView supports className
 cssInterop(BlurView, {

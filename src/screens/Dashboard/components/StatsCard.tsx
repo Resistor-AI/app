@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { Shield, ArrowUpRight, Smartphone, Flame } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
+import { Shield, ArrowUpRight, Smartphone, Flame } from "lucide-react-native";
 
 import { StatsCardProps } from "@/src/types/Dashboard";
 
@@ -9,7 +9,7 @@ export function StatsCard({ user }: StatsCardProps) {
   const [focusHours, focusMinutes] = user.focusSaved.split(" ");
 
   return (
-    <View className="px-6 mb-10">
+    <View className="px-6 mb-6">
       <View className="bg-zinc-900/60 border border-white/10 rounded-[32px] p-5 backdrop-blur-xl shadow-2xl overflow-hidden relative">
         <View className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 

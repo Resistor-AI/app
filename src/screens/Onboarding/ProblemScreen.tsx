@@ -3,12 +3,10 @@ import { View, useWindowDimensions } from "react-native";
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import {
-  OnboardingHeader,
-  OnboardingSubtext,
-  OnboardingButton,
-  OnboardingStepper,
-} from "./components";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingSubtext } from "./components/OnboardingSubtext";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingStepper } from "./components/OnboardingStepper";
 
 export default function ProblemScreen() {
   const router = useRouter();

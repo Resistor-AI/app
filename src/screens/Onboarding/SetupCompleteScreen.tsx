@@ -16,11 +16,9 @@ import Animated, {
 import { useEffect } from "react";
 import { AppText } from "@/src/components/atoms/text";
 import { COLORS } from "@/src/constants";
-import {
-  OnboardingHeader,
-  OnboardingButton,
-  OnboardingStepper,
-} from "./components";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingStepper } from "./components/OnboardingStepper";
 
 export default function SetupCompleteScreen() {
   const router = useRouter();

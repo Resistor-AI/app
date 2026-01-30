@@ -44,10 +44,11 @@ export type TextVariant = keyof typeof variantClasses;
 export type TextColor = keyof typeof colorClasses;
 
 export interface TextProps extends React.ComponentProps<typeof RNText> {
-  variant?: TextVariant;
-  color?: TextColor;
+  content?: string;
   center?: boolean;
+  color?: TextColor;
   className?: string;
+  variant?: TextVariant;
 }
 
 /**
@@ -57,6 +58,7 @@ export const AppText = ({
   variant = "body",
   color = "primary",
   center,
+  content,
   className,
   children,
   ...rest
@@ -72,7 +74,7 @@ export const AppText = ({
 
   return (
     <RNText {...rest} className={mergedClassName}>
-      {children}
+      {content || children}
     </RNText>
   );
 };
