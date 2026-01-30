@@ -1,10 +1,82 @@
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { Hourglass } from "lucide-react-native";
+import { Hourglass, Coffee } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 import { PRIORITY_QUEUE_DATA } from "@/src/data/DashboardScreen";
+import { FocusSettings } from "@/modules/installed-apps";
 
-export function PriorityQueue() {
+interface PriorityQueueProps {
+  settings?: FocusSettings;
+  data?: any[];
+}
+
+export function PriorityQueue({ settings, data }: PriorityQueueProps) {
+  const [timeLeft, setTimeLeft] = useState("00:00:00");
+  const [progress, setProgress] = useState(0);
+
+  // Use passed data or fallback to default, handling empty array explicitly
+  const queueData = data !== undefined ? data : PRIORITY_QUEUE_DATA;
+
+  useEffect(() => {
+    if (!settings?.isSessionActive) {
+      setTimeLeft("OFFLINE");
+      setProgress(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const end = settings.scheduleEnd;
+      const start = settings.scheduleStart;
+      const remaining = end - now;
+      const totalDuration = end - start;
+
+      if (remaining <= 0) {
+        setTimeLeft("FINISHED");
+        setProgress(100);
+        clearInterval(interval);
+      } else {
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        setTimeLeft(
+          `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`,
+        );
+        setProgress(((now - start) / totalDuration) * 100);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [settings]);
+
+  const isActive = settings?.isSessionActive;
+
+  // Empty State Card
+  if (queueData.length === 0) {
+    return (
+      <View className="mb-10 w-full px-6">
+        <View className="flex-row items-center justify-between mb-4 pl-1">
+          <AppText
+            content="Priority Queue"
+            className="text-zinc-500 text-xs font-bold uppercase tracking-widest pl-4"
+          />
+        </View>
+        <View className="w-full h-52 items-center justify-center opacity-50">
+          <View className="w-16 h-16 bg-zinc-900 rounded-full items-center justify-center mb-4 border border-zinc-800">
+            <Coffee size={24} color="#71717a" />
+          </View>
+          <AppText className="text-zinc-400 font-medium text-sm">
+            All Caught Up
+          </AppText>
+          <AppText className="text-zinc-600 text-xs mt-1 text-center">
+            No active sessions queued.{"\n"}Enjoy your free time!
+          </AppText>
+        </View>
+      </View>
+    );
+  }
+
   const renderItem = ({ item }: { item: any }) => {
     // ACTIVE CARD DESIGN
     if (item.status === "active") {
@@ -15,41 +87,53 @@ export function PriorityQueue() {
 
           {/* Top: Tag + Pulse */}
           <View className="flex-row justify-between items-center">
-            <View className="bg-yellow-500/10 px-2.5 py-1.5 rounded-lg border border-yellow-500/10">
-              <AppText className="text-yellow-500 text-[9px] font-black uppercase tracking-wider">
-                {item.title}
+            <View
+              className={`${isActive ? "bg-yellow-500/10 border-yellow-500/10" : "bg-zinc-800 border-zinc-700"} px-2.5 py-1.5 rounded-lg border`}
+            >
+              <AppText
+                className={`${isActive ? "text-yellow-500" : "text-zinc-500"} text-[9px] font-black uppercase tracking-wider`}
+              >
+                {isActive ? "Deep Work" : "Offline"}
               </AppText>
             </View>
-            <View className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse shadow-[0_0_10px_rgba(234,179,8,0.8)]" />
+            {isActive && (
+              <View className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse shadow-[0_0_10px_rgba(234,179,8,0.8)]" />
+            )}
           </View>
 
           {/* Middle: Content */}
           <View>
             <AppText className="text-white text-xl font-bold leading-6 tracking-tight mb-1">
-              {item.subtitle}
+              {isActive ? "Focus\nMode" : "No Active\nSession"}
             </AppText>
             <AppText className="text-zinc-500 text-xs font-medium">
-              {item.description}
+              {isActive
+                ? "Blocking Distractions"
+                : "Schedule a session to start"}
             </AppText>
           </View>
 
           {/* Bottom: Timer */}
           <View className="flex-row justify-between items-end">
             <AppText className="text-zinc-600 text-[10px] font-bold uppercase mb-1.5">
-              Time Left
+              {isActive ? "Time Left" : "Status"}
             </AppText>
             <AppText
-              className="text-3xl text-white font-bold tracking-tighter"
+              className={`text-3xl ${isActive ? "text-white" : "text-zinc-600"} font-bold tracking-tighter`}
               style={{ fontVariant: ["tabular-nums"] }}
             >
-              24:15
+              {timeLeft}
             </AppText>
           </View>
 
-          {/* Bottom Progress Line */}
-          <View className="absolute bottom-0 left-0 w-full h-1 bg-zinc-800">
-            <View className="w-[45%] h-full bg-yellow-500" />
-          </View>
+          {isActive && (
+            <View className="absolute bottom-0 left-0 w-full h-1 bg-zinc-800">
+              <View
+                className="h-full bg-yellow-500"
+                style={{ width: `${progress}%` }}
+              />
+            </View>
+          )}
         </View>
       );
     }
@@ -111,16 +195,20 @@ export function PriorityQueue() {
           className="text-zinc-500 text-xs font-bold uppercase tracking-widest pl-4"
         />
         <View className="flex-row items-center gap-2">
-          <View className="s-1.5 rounded-full bg-green-500 animate-pulse" />
-          <AppText
-            content="Live"
-            className="text-green-500 text-[10px] font-bold uppercase"
-          />
+          {isActive && (
+            <>
+              <View className="s-1.5 rounded-full bg-green-500 animate-pulse" />
+              <AppText
+                content="Live"
+                className="text-green-500 text-[10px] font-bold uppercase"
+              />
+            </>
+          )}
         </View>
       </View>
 
       <FlashList
-        data={PRIORITY_QUEUE_DATA}
+        data={queueData}
         renderItem={renderItem}
         horizontal
         showsHorizontalScrollIndicator={false}

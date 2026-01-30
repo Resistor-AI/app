@@ -1,20 +1,64 @@
-import React from "react";
-import { View } from "react-native";
+import { View, Image } from "react-native";
 import { AppText } from "@/src/components/atoms/text";
-import { Shield, ArrowUpRight, Smartphone, Flame } from "lucide-react-native";
+import {
+  Shield,
+  ArrowUpRight,
+  Lock,
+  Flame,
+  XCircle,
+} from "lucide-react-native";
+import { useAppIcon } from "@/src/hooks/useInstalledApps";
 
 import { StatsCardProps } from "@/src/types/Dashboard";
 
-export function StatsCard({ user }: StatsCardProps) {
-  const [focusHours, focusMinutes] = user.focusSaved.split(" ");
+interface ExtendedStatsProps extends StatsCardProps {
+  realBlockedCount: number;
+  blockedApps: string[];
+  distractionsBlocked?: number;
+}
+
+const BlockedAppIcon = ({
+  packageName,
+  index,
+}: {
+  packageName: string;
+  index: number;
+}) => {
+  const { data: icon } = useAppIcon(packageName);
+
+  if (!icon) return null;
 
   return (
-    <View className="px-6 mb-6">
+    <View
+      className={`size-5 rounded-full border border-[#18181b] overflow-hidden bg-zinc-800 items-center justify-center ${index > 0 ? "-ml-2" : ""}`}
+      style={{ zIndex: 5 - index }}
+    >
+      <Image
+        source={{ uri: `data:image/png;base64,${icon}` }}
+        className="w-full h-full"
+        resizeMode="contain"
+      />
+    </View>
+  );
+};
+
+export function StatsCard({
+  user,
+  realBlockedCount,
+  blockedApps,
+  distractionsBlocked = 14,
+}: ExtendedStatsProps) {
+  const [focusHours, focusMinutes] = user.focusSaved.split(" ");
+  // Reduce to 3 icons max
+  const displayApps = blockedApps.slice(0, 3);
+
+  return (
+    <View className="px-5 mb-6">
       <View className="bg-zinc-900/60 border border-white/10 rounded-[32px] p-5 backdrop-blur-xl shadow-2xl overflow-hidden relative">
         <View className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
         {/* --- TOP: FOCUS SAVED --- */}
-        <View className="mb-5 border-b border-white/5 pb-5">
+        <View className="mb-4 border-b border-white/5 pb-3">
           <View className="flex-row justify-between items-center mb-1">
             <View className="flex-row items-center gap-2">
               <View className="bg-emerald-500/10 p-1.5 rounded-lg border border-emerald-500/10">
@@ -33,7 +77,7 @@ export function StatsCard({ user }: StatsCardProps) {
           </View>
 
           <View className="mt-2">
-            <AppText className="text-5xl text-white font-bold tracking-tighter">
+            <AppText className="text-5xl text-white font-sans font-semibold tracking-tighter">
               {focusHours.replace("h", "")}
               <AppText className="text-3xl text-zinc-500">h </AppText>
               {focusMinutes.replace("m", "")}
@@ -42,31 +86,66 @@ export function StatsCard({ user }: StatsCardProps) {
           </View>
         </View>
 
-        {/* --- BOTTOM: SPLIT METRICS --- */}
-        <View className="flex-row justify-between items-center">
-          {/* Left: Screen Time */}
-          <View className="flex-1 border-r border-white/5 pr-4">
-            <View className="flex-row items-center gap-2 mb-1">
-              <Smartphone size={12} color="#60a5fa" />
-              <AppText className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">
-                Screen Time
+        {/* --- BOTTOM: REFINED 3-COLUMN LAYOUT --- */}
+        <View className="flex-row items-center">
+          {/* 1. LEFT: PROTECTED */}
+          <View className="flex-1 items-start">
+            <View className="flex-row items-center gap-1.5 mb-1">
+              <Lock size={12} color="#60a5fa" />
+              <AppText className="text-zinc-500 text-[9px] font-bold uppercase tracking-wider">
+                Protected
               </AppText>
             </View>
-            <AppText className="text-2xl text-white font-bold tracking-tight">
-              {user.screenTime}
-            </AppText>
+            <View className="flex-row items-center h-8">
+              <AppText className="text-2xl text-white font-semibold tracking-tight mr-2">
+                {realBlockedCount}
+              </AppText>
+              {/* Icons Row */}
+              <View className="flex-row items-center">
+                {displayApps.map((pkg, index) => (
+                  <BlockedAppIcon key={pkg} packageName={pkg} index={index} />
+                ))}
+              </View>
+            </View>
           </View>
 
-          {/* Right: Streak (Obvious & Glowing) */}
-          <View className="flex-1 pl-5 flex-row items-center gap-3">
-            <View className="h-10 w-10 bg-orange-500/20 rounded-full items-center justify-center border border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.3)]">
-              <Flame size={20} color="#fbbf24" fill="#fbbf24" />
+          {/* DIVIDER 1 */}
+          <View className="w-[1px] h-full bg-white/10 mx-3" />
+
+          {/* 2. CENTER: BLOCKED */}
+          <View className="flex-1 items-start">
+            <View className="flex-row items-center gap-1.5 mb-1">
+              <XCircle size={12} color="#f59e0b" />
+              <AppText className="text-zinc-500 text-[9px] font-bold uppercase tracking-wider">
+                Blocked
+              </AppText>
             </View>
-            <View>
-              <AppText className="text-2xl text-white font-bold">
+            <View className="flex-row items-baseline h-8">
+              <AppText className="text-2xl text-white font-semibold tracking-tight">
+                {distractionsBlocked}
+              </AppText>
+              <AppText className="text-zinc-500 text-sm font-medium ml-0.5">
+                x
+              </AppText>
+            </View>
+          </View>
+
+          {/* DIVIDER 2 */}
+          <View className="w-[1px] h-full bg-white/10 mx-3" />
+
+          {/* 3. RIGHT: STREAK */}
+          <View className="flex-1 items-start">
+            <View className="flex-row items-center gap-1.5 mb-1">
+              <Flame size={12} color="#fbbf24" fill="#fbbf24" />
+              <AppText className="text-zinc-500 text-[9px] font-bold uppercase tracking-wider">
+                Streak
+              </AppText>
+            </View>
+            <View className="flex-row items-baseline h-8">
+              <AppText className="text-2xl text-white font-semibold tracking-tight">
                 {user.streak}
               </AppText>
-              <AppText className="text-zinc-500 text-[9px] font-bold uppercase tracking-wider">
+              <AppText className="text-zinc-500 text-sm font-medium ml-1">
                 Days
               </AppText>
             </View>

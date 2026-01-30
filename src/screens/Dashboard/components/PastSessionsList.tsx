@@ -57,6 +57,20 @@ export function PastSessionsList({
         estimatedItemSize={50}
         keyExtractor={(item) => String(item.id)}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View className="px-6 py-10 items-center justify-center opacity-50">
+            <View className="w-16 h-16 bg-zinc-900 rounded-full items-center justify-center mb-4 border border-zinc-800">
+              <Shield size={24} color="#71717a" />
+            </View>
+            <AppText className="text-zinc-400 font-medium text-sm">
+              No sessions yet
+            </AppText>
+            <AppText className="text-zinc-600 text-xs mt-1 text-center">
+              Complete your first focus session{"\n"}to start building your
+              streak.
+            </AppText>
+          </View>
+        }
         ListHeaderComponent={
           <View>
             {header}

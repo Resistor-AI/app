@@ -1,10 +1,11 @@
-import { View } from "react-native";
+import { View, TouchableOpacity, Linking, Text } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { PastSessionsList } from "./components/PastSessionsList";
 
+import { useFocusData } from "@/src/hooks/useFocusData";
 import { USER, PAST_SESSIONS } from "@/src/data/DashboardScreen";
 import { DashboardHeader } from "./components/DashboardHeader";
 import { StatsCard } from "./components/StatsCard";
@@ -12,17 +13,16 @@ import { PriorityQueue } from "./components/PriorityQueue";
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
+  const { data, isLoading } = useFocusData();
+  const permissions = data?.permissions;
+  const settings = data?.settings;
 
-  /*
-   * DASHBOARD STRUCTURE:
-   * Root: Flex-1 View
-   *  └─ FlashList (Vertical) - Handles scaling "Past Sessions"
-   *      ├─ ListHeaderComponent:
-   *      │   ├─ DashboardHeader
-   *      │   ├─ StatsCard
-   *      │   └─ PriorityQueue (Horizontal FlashList)
-   *      └─ renderItem: Session Row
-   */
+  const isPermissionGranted =
+    permissions?.accessibility && permissions?.notifications;
+
+  const openSettings = () => {
+    Linking.sendIntent("android.settings.ACCESSIBILITY_SETTINGS");
+  };
 
   return (
     <View className="flex-1 bg-black">
@@ -36,11 +36,15 @@ export default function DashboardScreen() {
       >
         <View className="flex-1">
           <DashboardHeader />
-          <StatsCard user={USER} />
+          <StatsCard
+            user={USER}
+            realBlockedCount={settings?.blockedAppsCount || 0}
+            blockedApps={data?.blockedApps || []}
+          />
 
           <PastSessionsList
-            sessions={PAST_SESSIONS}
-            header={<PriorityQueue />}
+            sessions={[]}
+            header={<PriorityQueue settings={settings} data={[]} />}
           />
         </View>
       </SafeAreaView>

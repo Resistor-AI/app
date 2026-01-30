@@ -71,9 +71,22 @@ interface InstalledAppsModuleType {
    * Check if permissions are granted
    * @returns Promise resolving to permission status
    */
-  checkPermissions(): Promise<{ accessibility: boolean; notifications: boolean }>;
+  checkPermissions(): Promise<{
+    accessibility: boolean;
+    notifications: boolean;
+  }>;
 
   getBlockedApps(): string[];
+
+  /**
+   * Get current focus settings
+   */
+  getSettings(): Promise<{
+    scheduleStart: number;
+    scheduleEnd: number;
+    blockedAppsCount: number;
+    isSessionActive: boolean;
+  }>;
 }
 
 // Require the native module

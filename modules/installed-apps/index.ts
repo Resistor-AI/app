@@ -43,6 +43,17 @@ export interface PermissionStatus {
   notifications: boolean;
 }
 
+export interface FocusSettings {
+  scheduleStart: number;
+  scheduleEnd: number;
+  blockedAppsCount: number;
+  isSessionActive: boolean;
+}
+
+export function getSettings(): Promise<FocusSettings> {
+  return InstalledAppsModule.getSettings();
+}
+
 export function checkPermissions(): Promise<PermissionStatus> {
   return InstalledAppsModule.checkPermissions();
 }
