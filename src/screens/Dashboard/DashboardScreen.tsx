@@ -25,29 +25,31 @@ export default function DashboardScreen() {
   };
 
   return (
-    <View className="flex-1 bg-black">
-      {/* Background: Subtle Ambient Glow */}
-      {/* <View className="absolute top-[5%] left-[10%] right-[10%] h-[400px] bg-blue-900/10 rounded-full blur-[100px]" /> */}
+    // <View className="flex-1">
+    <SafeAreaView
+      className="flex-1"
+      edges={["top"]}
+      style={{ paddingBottom: insets.bottom + 20 }}
+    >
+      <View className="flex-1">
+        <DashboardHeader />
+        <StatsCard
+          user={{
+            streak: 0,
+            focusSaved: "0h 0m",
+            screenTime: "0h 0m",
+          }}
+          realBlockedCount={settings?.blockedAppsCount ?? 0}
+          blockedApps={data?.blockedApps ?? []}
+          distractionsBlocked={0}
+        />
 
-      <SafeAreaView
-        className="flex-1"
-        edges={["top"]}
-        style={{ paddingBottom: insets.bottom + 20 }}
-      >
-        <View className="flex-1">
-          <DashboardHeader />
-          <StatsCard
-            user={USER}
-            realBlockedCount={settings?.blockedAppsCount || 0}
-            blockedApps={data?.blockedApps || []}
-          />
-
-          <PastSessionsList
-            sessions={[]}
-            header={<PriorityQueue settings={settings} data={[]} />}
-          />
-        </View>
-      </SafeAreaView>
-    </View>
+        <PastSessionsList
+          sessions={[]}
+          header={<PriorityQueue settings={settings} />}
+        />
+      </View>
+    </SafeAreaView>
+    // </View>
   );
 }

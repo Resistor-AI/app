@@ -176,6 +176,7 @@ class InstalledAppsModule : Module() {
             "scheduleStart" to start,
             "scheduleEnd" to end,
             "blockedAppsCount" to blockedPackages.size,
+            "blockedApps" to blockedPackages.toList(),
             "isSessionActive" to isActive
         )
     }

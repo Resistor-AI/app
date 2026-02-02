@@ -62,26 +62,23 @@ export function PastSessionsList({
             <View className="w-16 h-16 bg-zinc-900 rounded-full items-center justify-center mb-4 border border-zinc-800">
               <Shield size={24} color="#71717a" />
             </View>
-            <AppText className="text-zinc-400 font-medium text-sm">
-              No sessions yet
-            </AppText>
-            <AppText className="text-zinc-600 text-xs mt-1 text-center">
-              Complete your first focus session{"\n"}to start building your
-              streak.
-            </AppText>
+            <AppText
+              className="text-zinc-400 font-medium text-sm"
+              content="No sessions yet"
+            />
+            <AppText
+              className="text-zinc-600 text-xs mt-1 text-center"
+              content={`Complete your first focus session\nto start building your streak.`}
+            />
           </View>
         }
         ListHeaderComponent={
           <View>
             {header}
-            <View className="px-6 flex-row justify-between items-end mb-4 pl-1">
-              <AppText className="text-zinc-500 text-xs font-bold uppercase tracking-widest pl-4">
-                Past Sessions
-              </AppText>
+            <View className="px-6 flex-row justify-between items-end mb-4">
+              <AppText content="Past Sessions" variant="overline" />
               <Pressable>
-                <AppText className="text-blue-500 text-xs font-medium">
-                  View All
-                </AppText>
+                <AppText content="View All" variant="overline" color="blue" />
               </Pressable>
             </View>
           </View>

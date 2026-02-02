@@ -47,6 +47,7 @@ export interface FocusSettings {
   scheduleStart: number;
   scheduleEnd: number;
   blockedAppsCount: number;
+  blockedApps: string[];
   isSessionActive: boolean;
 }
 
