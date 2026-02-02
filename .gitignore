@@ -49,3 +49,5 @@ android/local.properties
 
 # Social Media Content
 social-content/
+.agents/
+.claude/
