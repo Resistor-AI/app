@@ -1,4 +1,6 @@
 import { View, Image } from "react-native";
+import { memo } from "react";
+import Animated from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 import {
   Shield,
@@ -8,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react-native";
 import { useAppIcon } from "@/src/hooks/useInstalledApps";
+import { useStaggeredEntry } from "@/src/hooks/animations";
 
 import { StatsCardProps } from "@/src/types/Dashboard";
 
@@ -17,48 +20,84 @@ interface ExtendedStatsProps extends StatsCardProps {
   distractionsBlocked?: number;
 }
 
-const BlockedAppIcon = ({
+const BlockedAppIcon = memo(function BlockedAppIcon({
   packageName,
   index,
 }: {
   packageName: string;
   index: number;
-}) => {
+}) {
   const { data: icon } = useAppIcon(packageName);
+
+  // Staggered entry for app icons
+  const { animatedStyle } = useStaggeredEntry({
+    index,
+    staggerDelay: 50,
+    duration: 300,
+    translateY: 5,
+    initialScale: 0.8,
+  });
 
   if (!icon) return null;
 
   return (
-    <View
+    <Animated.View
+      style={[animatedStyle, { zIndex: 5 - index }]}
       className={`size-5 rounded-full border border-[#18181b] overflow-hidden bg-zinc-800 items-center justify-center ${index > 0 ? "-ml-2" : ""}`}
-      style={{ zIndex: 5 - index }}
     >
       <Image
         source={{ uri: `data:image/png;base64,${icon}` }}
         className="w-full h-full"
         resizeMode="contain"
       />
-    </View>
+    </Animated.View>
   );
-};
+});
 
-export function StatsCard({
+export const StatsCard = memo(function StatsCard({
   user,
   realBlockedCount,
   blockedApps,
   distractionsBlocked = 14,
 }: ExtendedStatsProps) {
   const [focusHours, focusMinutes] = user.focusSaved.split(" ");
-  // Reduce to 3 icons max
   const displayApps = blockedApps.slice(0, 3);
 
+  // Card entry animation
+  const { animatedStyle: cardStyle } = useStaggeredEntry({
+    index: 0,
+    duration: 600,
+    translateY: 20,
+    initialScale: 0.98,
+    useSpring: true,
+    springPreset: "gentle",
+  });
+
+  // Staggered sections
+  const { animatedStyle: topSectionStyle } = useStaggeredEntry({
+    index: 1,
+    staggerDelay: 150,
+    duration: 400,
+    translateY: 10,
+  });
+
+  const { animatedStyle: bottomSectionStyle } = useStaggeredEntry({
+    index: 2,
+    staggerDelay: 150,
+    duration: 400,
+    translateY: 10,
+  });
+
   return (
-    <View className="px-5 mb-6">
+    <Animated.View style={cardStyle} className="px-5 mb-6">
       <View className="bg-zinc-900/60 border border-white/10 rounded-[32px] p-5 backdrop-blur-xl shadow-2xl overflow-hidden relative">
         <View className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
         {/* --- TOP: FOCUS SAVED --- */}
-        <View className="mb-4 border-b border-white/5 pb-3">
+        <Animated.View
+          style={topSectionStyle}
+          className="mb-4 border-b border-white/5 pb-3"
+        >
           <View className="flex-row justify-between items-center mb-1">
             <View className="flex-row items-center gap-2">
               <View className="bg-emerald-500/10 p-1.5 rounded-lg border border-emerald-500/10">
@@ -84,10 +123,10 @@ export function StatsCard({
               <AppText className="text-3xl text-zinc-500">m</AppText>
             </AppText>
           </View>
-        </View>
+        </Animated.View>
 
-        {/* --- BOTTOM: REFINED 3-COLUMN LAYOUT --- */}
-        <View className="flex-row items-center">
+        {/* --- BOTTOM: 3-COLUMN LAYOUT --- */}
+        <Animated.View style={bottomSectionStyle} className="flex-row items-center">
           {/* 1. LEFT: PROTECTED */}
           <View className="flex-1 items-start">
             <View className="flex-row items-center gap-1.5 mb-1">
@@ -100,7 +139,6 @@ export function StatsCard({
               <AppText className="text-2xl text-white font-semibold tracking-tight mr-2">
                 {realBlockedCount}
               </AppText>
-              {/* Icons Row */}
               <View className="flex-row items-center">
                 {displayApps.map((pkg, index) => (
                   <BlockedAppIcon key={pkg} packageName={pkg} index={index} />
@@ -150,8 +188,8 @@ export function StatsCard({
               </AppText>
             </View>
           </View>
-        </View>
+        </Animated.View>
       </View>
-    </View>
+    </Animated.View>
   );
-}
+});

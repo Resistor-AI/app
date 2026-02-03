@@ -1,16 +1,38 @@
 import { View } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { FlashList } from "@shopify/flash-list";
+import Animated from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 
 import { ItemCard } from "./ItemCard";
 import { EmptyState } from "./EmptyState";
 import { ActiveCard } from "./ActiveCard";
 import { PriorityQueueProps } from "@/src/types/Dashboard";
+import { usePulseAnimation, useStaggeredEntry } from "@/src/hooks/animations";
 
-export function PriorityQueue({ settings, data }: PriorityQueueProps) {
+export const PriorityQueue = memo(function PriorityQueue({
+  settings,
+  data,
+}: PriorityQueueProps) {
   const [timeLeft, setTimeLeft] = useState("00:00:00");
   const [progress, setProgress] = useState(0);
+
+  const isActive = settings?.isSessionActive;
+
+  // Container entry animation
+  const { animatedStyle: containerStyle } = useStaggeredEntry({
+    index: 2,
+    staggerDelay: 100,
+    duration: 600,
+    translateY: 15,
+  });
+
+  // Live indicator pulse
+  const { animatedStyle: liveIndicatorStyle } = usePulseAnimation({
+    isActive: isActive ?? false,
+    duration: 1000,
+    minOpacity: 0.5,
+  });
 
   // Start with provided data or empty
   let queueData = data || [];
@@ -58,33 +80,38 @@ export function PriorityQueue({ settings, data }: PriorityQueueProps) {
     return () => clearInterval(interval);
   }, [settings]);
 
-  const isActive = settings?.isSessionActive;
-
   // Empty State Card
   if (queueData.length === 0) return <EmptyState />;
 
-  const renderItem = ({ item }: { item: any }) => {
-    if (item.status === "active") {
-      return (
-        <ActiveCard
-          isActive={isActive}
-          timeLeft={timeLeft}
-          progress={progress}
-        />
-      );
-    }
+  const renderItem = useCallback(
+    ({ item, index }: { item: any; index: number }) => {
+      if (item.status === "active") {
+        return (
+          <ActiveCard
+            isActive={isActive}
+            timeLeft={timeLeft}
+            progress={progress}
+            index={index}
+          />
+        );
+      }
 
-    return <ItemCard item={item} />;
-  };
+      return <ItemCard item={item} index={index} />;
+    },
+    [isActive, timeLeft, progress],
+  );
 
   return (
-    <View className="mb-10 w-full">
+    <Animated.View style={containerStyle} className="mb-10 w-full">
       <View className="px-6 flex-row items-center justify-between mb-4 pl-1">
         <AppText content="Priority Queue" variant="overline" />
         <View className="flex-row items-center gap-2">
           {isActive && (
             <>
-              <View className="s-1.5 rounded-full bg-green-500 animate-pulse" />
+              <Animated.View
+                style={liveIndicatorStyle}
+                className="h-1.5 w-1.5 rounded-full bg-green-500"
+              />
               <AppText
                 content="Live"
                 className="text-green-500 text-[10px] font-bold uppercase"
@@ -100,7 +127,9 @@ export function PriorityQueue({ settings, data }: PriorityQueueProps) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 24 }}
+        // @ts-ignore
+        estimatedItemSize={200}
       />
-    </View>
+    </Animated.View>
   );
-}
+});

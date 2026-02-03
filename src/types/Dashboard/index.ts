@@ -46,3 +46,12 @@ export interface ActiveCardProps {
 export interface ItemCardProps {
   item: PriorityQueueData;
 }
+
+export interface FloatingActionButtonProps {
+  onPress: () => void;
+  icon?: React.ReactNode;
+  className?: string;
+  iconSize?: number;
+  iconColor?: string;
+  hapticFeedback?: boolean;
+}

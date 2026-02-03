@@ -3,7 +3,9 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { PastSessionsList } from "./components/PastSessionsList";
+import { FloatingActionButton } from "@/src/components/atoms/FloatingActionButton";
 
 import { useFocusData } from "@/src/hooks/useFocusData";
 import { USER, PAST_SESSIONS } from "@/src/data/DashboardScreen";
@@ -13,6 +15,7 @@ import { PriorityQueue } from "./components/PriorityQueue";
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { data, isLoading } = useFocusData();
   const permissions = data?.permissions;
   const settings = data?.settings;
@@ -24,8 +27,11 @@ export default function DashboardScreen() {
     Linking.sendIntent("android.settings.ACCESSIBILITY_SETTINGS");
   };
 
+  const handleCreateSession = () => {
+    router.push("/(app)/(protected)/focus-setup");
+  };
+
   return (
-    // <View className="flex-1">
     <SafeAreaView
       className="flex-1"
       edges={["top"]}
@@ -49,7 +55,8 @@ export default function DashboardScreen() {
           header={<PriorityQueue settings={settings} />}
         />
       </View>
+
+      <FloatingActionButton onPress={handleCreateSession} />
     </SafeAreaView>
-    // </View>
   );
 }

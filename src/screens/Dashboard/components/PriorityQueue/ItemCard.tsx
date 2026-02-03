@@ -1,12 +1,32 @@
 import { View } from "react-native";
+import { memo } from "react";
+import Animated from "react-native-reanimated";
 import { Hourglass } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 import { ItemCardProps } from "@/src/types/Dashboard";
+import { useStaggeredEntry } from "@/src/hooks/animations";
 
-export const ItemCard = ({ item }: ItemCardProps) => {
+interface ExtendedItemCardProps extends ItemCardProps {
+  index?: number;
+}
+
+export const ItemCard = memo(function ItemCard({
+  item,
+  index = 0,
+}: ExtendedItemCardProps) {
+  // Entry animation with stagger
+  const { animatedStyle } = useStaggeredEntry({
+    index: index + 1, // Offset to come after ActiveCard
+    staggerDelay: 100,
+    duration: 400,
+    translateY: 15,
+    initialScale: 0.95,
+  });
+
   return (
-    <View
-      className={`mr-4 w-[180px] bg-zinc-900 rounded-[28px] p-6 justify-between h-52 border border-zinc-800/80 opacity-60`}
+    <Animated.View
+      style={animatedStyle}
+      className="mr-4 w-[180px] bg-zinc-900 rounded-[28px] p-6 justify-between h-52 border border-zinc-800/80 opacity-60"
     >
       {/* Top: Tag + Count */}
       <View className="flex-row justify-between items-center">
@@ -39,6 +59,6 @@ export const ItemCard = ({ item }: ItemCardProps) => {
           {item.duration}
         </AppText>
       </View>
-    </View>
+    </Animated.View>
   );
-};
+});
