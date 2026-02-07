@@ -1,50 +1,49 @@
 import { memo } from "react";
-import { Pressable } from "react-native";
+import { View } from "react-native";
 import { Plus } from "lucide-react-native";
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { FloatingActionButtonProps } from "@/src/types/Dashboard";
 
-/**
- * Floating Action Button for primary actions.
- * Positioned at bottom-right corner.
- */
 export const FloatingActionButton = memo(function FloatingActionButton({
   onPress,
-  icon,
-  className,
-  iconSize = 24,
-  iconColor = "#ffffff",
   hapticFeedback = true,
 }: FloatingActionButtonProps) {
-  const handlePress = () => {
-    if (hapticFeedback) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-    onPress();
-  };
+  const scale = useSharedValue(1);
 
-  const containerClassName = twMerge(
-    clsx(
-      "absolute bottom-6 right-6",
-      "size-14 rounded-full",
-      "bg-electricBlue",
-      "items-center justify-center",
-      "shadow-lg shadow-electricBlue/30",
-      className
-    )
-  );
+  const tapGesture = Gesture.Tap()
+    .onBegin(() => {
+      scale.value = withSpring(0.93, { damping: 15, stiffness: 400 });
+    })
+    .onFinalize(() => {
+      scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+    })
+    .onEnd(() => {
+      if (hapticFeedback) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }
+      onPress();
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
-    <Pressable
-      onPress={handlePress}
-      className={containerClassName}
-      style={({ pressed }) => ({
-        opacity: pressed ? 0.8 : 1,
-      })}
-    >
-      {icon ?? <Plus size={iconSize} color={iconColor} strokeWidth={2.5} />}
-    </Pressable>
+    <View className="absolute bottom-10 right-6">
+      <GestureDetector gesture={tapGesture}>
+        <Animated.View
+          style={animatedStyle}
+          className="size-14 rounded-full bg-white/5 border border-white/[0.08] items-center justify-center"
+        >
+          <Plus size={24} color="#ffffff" strokeWidth={2.5} />
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 });

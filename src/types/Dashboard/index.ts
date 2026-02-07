@@ -1,7 +1,8 @@
+import React from "react";
+
 export interface StatsCardProps {
   user: {
     focusSaved: string;
-    screenTime: string;
     streak: number;
   };
 }
@@ -18,40 +19,11 @@ export interface PastSessionsListProps {
   sessions: Session[];
 }
 
-import { FocusSettings } from "@/modules/installed-apps";
-
-export interface PriorityQueueData {
-  id?: string;
-  status?: string;
-  color?: string;
-  title?: string;
-  count?: number | string;
-  subtitle?: string;
-  description?: string;
-  duration?: string;
-  [key: string]: any;
-}
-
-export interface PriorityQueueProps {
-  settings?: FocusSettings;
-  data?: PriorityQueueData[];
-}
-
-export interface ActiveCardProps {
-  isActive?: boolean;
-  timeLeft: string;
-  progress: number;
-}
-
-export interface ItemCardProps {
-  item: PriorityQueueData;
-}
-
 export interface FloatingActionButtonProps {
   onPress: () => void;
-  icon?: React.ReactNode;
-  className?: string;
-  iconSize?: number;
-  iconColor?: string;
   hapticFeedback?: boolean;
+}
+
+export interface ExtendedPastSessionsListProps extends PastSessionsListProps {
+  header?: React.ReactNode;
 }
