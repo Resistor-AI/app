@@ -21,5 +21,3 @@ export const COLORS = {
   textSecondary: "#A1A1AA",
   textTertiary: "#52525B",
 } as const;
-
-export type ColorName = keyof typeof COLORS;

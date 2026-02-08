@@ -1,5 +1,6 @@
 import { Stack, SplashScreen } from "expo-router";
 import "../src/global.css";
+import { COLORS } from "@/src/constants/colors";
 import {
   useFonts,
   Inter_400Regular,
@@ -48,10 +49,17 @@ export default function RootNav() {
     }
   }, [loaded]);
 
+
   if (!loaded) return null;
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: COLORS.background },
+      }}
+    >
       <Stack.Screen name="(app)" />
+      <Stack.Screen name="block" options={{ animation: "none" }} />
     </Stack>
   );
 }

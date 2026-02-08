@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml:2:13-83
+INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml:2:13-83
+	package
+		INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml
+	xmlns:android
+		ADDED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml:2:23-81
+uses-sdk
+INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml reason: use-sdk injection requested
+INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml
+INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml
+	android:targetSdkVersion
+		INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml
+	android:minSdkVersion
+		INJECTED from /Users/abdulafeezpifapp/Desktop/resistor-ai/app/modules/installed-apps/android/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest3729774270955666600.xml

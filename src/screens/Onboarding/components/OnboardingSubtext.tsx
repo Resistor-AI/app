@@ -1,17 +1,7 @@
 import { AppText } from "@/src/components/atoms/text";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { twMerge } from "tailwind-merge";
-
-export interface OnboardingSubtextProps {
-  /** Main description text */
-  children?: string;
-  /** Optional emphasized follow-up line */
-  emphasis?: string;
-  /** Animation delay offset in ms */
-  animationDelay?: number;
-
-  className?: string;
-}
+import { OnboardingSubtextProps } from "@/src/types/Onboarding/components";
 
 /**
  * OnboardingSubtext - Secondary text with optional emphasis for onboarding screens

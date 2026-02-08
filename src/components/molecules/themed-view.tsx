@@ -1,11 +1,7 @@
-import { View, type ViewProps } from "react-native";
+import { View } from "react-native";
 
-import { useThemeColor } from "@/src/lib/hooks/use-theme-color";
-
-export type ThemedViewProps = ViewProps & {
-  lightColor?: string;
-  darkColor?: string;
-};
+import { useThemeColor } from "@/src/hooks/useThemeColor";
+import { ThemedViewProps } from "@/src/types/components/molecules";
 
 export function ThemedView({
   style,

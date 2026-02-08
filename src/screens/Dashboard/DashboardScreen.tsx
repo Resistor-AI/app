@@ -1,46 +1,96 @@
-import React from "react";
-import { View, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { USER, PAST_SESSIONS } from "@/src/data/DashboardScreen";
+import { View, Text, Pressable } from "react-native";
 import {
-  DashboardHeader,
-  StatsCard,
-  PriorityQueue,
-  PastSessionsList,
-} from "./components";
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { PastSessionsList } from "./components/PastSessionsList/PastSessionsList";
+import { FloatingActionButton } from "@/src/components/atoms/FloatingActionButton";
 
-export default function Dashboard() {
+import { useFocusData } from "@/src/hooks/useFocusData";
+import { useDashboardStats } from "@/src/hooks/dashboard/useDashboardStats";
+import { DashboardHeader } from "./components/DashboardHeader";
+import { PermissionBanner } from "./components/PermissionBanner";
+import { StatsCard } from "./components/StatsCard/StatsCard";
+import { PriorityQueue } from "./components/PriorityQueue/PriorityQueue";
+import { AppText } from "@/src/components/atoms/text";
+import { setSchedule } from "@/modules/installed-apps";
+import { useFocusSessionStore } from "@/src/store/focusSessionStore";
+import { useAuthStore } from "@/src/store/authStore";
+
+export default function DashboardScreen() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { data, isLoading, refetch } = useFocusData();
+  const { stats, pastSessions } = useDashboardStats();
+
+  const clearActiveSchedule = useFocusSessionStore((s) => s.clearActiveSchedule);
+  const logout = useAuthStore((s) => s.logout);
+
+  // Sync native settings when screen regains focus
+  useFocusEffect(useCallback(() => {
+    refetch();
+  }, [refetch]));
+
+  const permissions = data?.permissions;
+  const settings = data?.settings;
+
+  const handleCreateSession = () => {
+    router.push("/(app)/(protected)/focus-setup");
+  };
+
+  // DEV: Cancel session helper
+  const handleDevCancelSession = () => {
+    setSchedule(0, 0);
+    clearActiveSchedule();
+    refetch();
+  };
+
   return (
-    <View className="flex-1 bg-black">
-      {/* Background: Subtle Ambient Glow */}
-      <View className="absolute top-[5%] left-[10%] right-[10%] h-[400px] bg-blue-900/10 rounded-full blur-[100px]" />
+    <SafeAreaView
+      className="flex-1"
+      edges={["top"]}
+      style={{ paddingBottom: insets.bottom + 20 }}
+    >
+      <View className="flex-1">
+        <DashboardHeader />
+        <PermissionBanner permissions={permissions} />
 
-      <SafeAreaView className="flex-1">
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ==================================================================================== */}
-          {/* 1. HEADER: Professional Greeting                                                     */}
-          {/* ==================================================================================== */}
-          <DashboardHeader />
+        {/* DEV: Logout - Remove after testing */}
+        <Pressable onPress={logout} className="self-end mr-6 mb-2 bg-white/10 rounded-full px-3 py-1">
+          <AppText variant="caption" className="text-white/60">Logout</AppText>
+        </Pressable>
 
-          {/* ================================================================================== */}
-          {/* 2. THE UNIFIED STATS CARD (Streak is Obvious)                                      */}
-          {/* ================================================================================== */}
-          <StatsCard user={USER} />
+        {/* DEV: Cancel Session Button - Remove after testing */}
+        {(settings?.isSessionActive || (settings && settings.scheduleStart > 0 && settings.scheduleEnd > Date.now())) && (
+          <Pressable
+            onPress={handleDevCancelSession}
+            className="mx-6 mb-4 bg-red-500/20 border border-red-500/30 rounded-xl py-3 px-4"
+          >
+            <Text className="text-red-400 text-center font-semibold text-sm">
+              [DEV] Cancel Session
+            </Text>
+          </Pressable>
+        )}
+        <StatsCard
+          user={{
+            streak: stats.streak,
+            focusSaved: stats.focusSavedToday,
+          }}
+          realBlockedCount={settings?.blockedAppsCount ?? 0}
+          blockedApps={data?.blockedApps ?? []}
+          distractionsBlocked={stats.distractionsToday}
+        />
 
-          {/* ==================================================================================== */}
-          {/* 3. PRIORITY QUEUE (Refined Active Card)                                              */}
-          {/* ==================================================================================== */}
-          <PriorityQueue />
+        <PastSessionsList
+          sessions={pastSessions}
+          header={<PriorityQueue settings={settings} />}
+        />
+      </View>
 
-          {/* ==================================================================================== */}
-          {/* 4. PAST RECORDS (History List)                                                       */}
-          {/* ==================================================================================== */}
-          <PastSessionsList sessions={PAST_SESSIONS} />
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+      <FloatingActionButton onPress={handleCreateSession} />
+    </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import { EnergyChunk } from "@/src/types/TasksScreen";
+import { EnergyChunk } from "@/src/types/Brain/TasksScreen";
 
 export const MOCK_SCHEDULE: EnergyChunk[] = [
   {

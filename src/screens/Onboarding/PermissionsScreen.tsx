@@ -1,157 +1,27 @@
-import { useRouter } from "expo-router";
-import { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  useWindowDimensions,
-  Pressable,
-  Platform,
-  Linking,
-  Alert,
-} from "react-native";
-import * as Haptics from "expo-haptics";
-import * as Notifications from "expo-notifications";
+import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { BlurView } from "expo-blur";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { FadeIn, FadeInUp, ZoomIn } from "react-native-reanimated";
-import { AppText } from "@/src/components/atoms/text";
-import { COLORS, PERMISSIONS, PermissionStatus } from "@/src/constants";
-import {
-  OnboardingHeader,
-  OnboardingButton,
-  OnboardingSubtext,
-  OnboardingStepper,
-} from "./components";
-import { PermissionKey, PermissionStates } from "@/src/types/PermissionsScreen";
+import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
+import { PERMISSIONS } from "@/src/constants/data";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingSubtext } from "./components/OnboardingSubtext";
+import { OnboardingStepper } from "./components/OnboardingStepper";
+import { PermissionGuideModal } from "./components/PermissionGuideModal";
+import { usePermissionsLogic } from "@/src/hooks/usePermissionsLogic";
+import { PermissionRow } from "./components/PermissionRow";
+import { PermissionKey } from "@/src/types/Onboarding/PermissionsScreen";
 
 export default function PermissionsScreen() {
-  const router = useRouter();
-  const { height } = useWindowDimensions();
-
-  const [permissionStates, setPermissionStates] = useState<PermissionStates>({
-    notifications: "pending",
-    usage: "pending",
-  });
-  const [isRequesting, setIsRequesting] = useState(false);
-
-  // Check initial notification permission status
-  useEffect(() => {
-    checkNotificationStatus();
-  }, []);
-
-  const checkNotificationStatus = async () => {
-    const { status } = await Notifications.getPermissionsAsync();
-    setPermissionStates((prev) => ({
-      ...prev,
-      notifications: status === "granted" ? "granted" : "pending",
-    }));
-  };
-
-  const requestNotificationPermission = async () => {
-    setIsRequesting(true);
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-    try {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-
-      if (existingStatus === "granted") {
-        setPermissionStates((prev) => ({ ...prev, notifications: "granted" }));
-        await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success,
-        );
-        return;
-      }
-
-      if (existingStatus === "denied") {
-        Alert.alert(
-          "Notifications Disabled",
-          "Please enable notifications in Settings to receive focus reminders.",
-          [
-            { text: "Cancel", style: "cancel" },
-            { text: "Open Settings", onPress: () => Linking.openSettings() },
-          ],
-        );
-        return;
-      }
-
-      const { status } = await Notifications.requestPermissionsAsync();
-
-      if (status === "granted") {
-        setPermissionStates((prev) => ({ ...prev, notifications: "granted" }));
-        await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success,
-        );
-      } else {
-        setPermissionStates((prev) => ({ ...prev, notifications: "denied" }));
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      }
-    } catch (error) {
-      console.error("Error requesting notification permission:", error);
-    } finally {
-      setIsRequesting(false);
-    }
-  };
-
-  const requestUsageAccess = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-    Alert.alert(
-      "Enable Screen Time",
-      Platform.OS === "ios"
-        ? "To help block distracting apps, please enable Screen Time in Settings > Screen Time."
-        : "To help block distracting apps, please enable Usage Access in Settings > Apps > Special access > Usage access.",
-      [
-        { text: "Later", style: "cancel" },
-        {
-          text: "Open Settings",
-          onPress: async () => {
-            await Linking.openSettings();
-            setPermissionStates((prev) => ({ ...prev, usage: "granted" }));
-          },
-        },
-      ],
-    );
-  };
-
-  const handlePermissionPress = useCallback(
-    async (key: PermissionKey) => {
-      if (isRequesting) return;
-
-      switch (key) {
-        case "notifications":
-          await requestNotificationPermission();
-          break;
-        case "usage":
-          await requestUsageAccess();
-          break;
-      }
-    },
-    [isRequesting],
-  );
-
-  const handleContinue = async () => {
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    router.push("/(app)/(public)/(auth)");
-  };
-
-  const getPermissionIcon = (key: PermissionKey): string => {
-    const status = permissionStates[key];
-    if (status === "granted") return "✓";
-    if (status === "denied") return "✕";
-    return "→";
-  };
-
-  const getPermissionIconBg = (key: PermissionKey): string => {
-    const status = permissionStates[key];
-    if (status === "granted") return COLORS.deepPurple || "#5E5CE6";
-    if (status === "denied") return "#FF4444";
-    return `${COLORS.deepPurple || "#5E5CE6"}80`;
-  };
-
-  const canContinue =
-    permissionStates.notifications !== "pending" ||
-    permissionStates.usage !== "pending";
+  const {
+    modalConfig,
+    modalVisible,
+    canContinue,
+    isRequesting,
+    handleContinue,
+    setModalVisible,
+    permissionStates,
+    handlePermissionPress,
+  } = usePermissionsLogic();
 
   return (
     <View className="flex-1 bg-background pt-14">
@@ -159,7 +29,7 @@ export default function PermissionsScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={3} />
+        <OnboardingStepper totalSteps={6} currentStep={4} />
       </View>
 
       <View className="flex-1 px-7 pb-10 justify-between mt-6">
@@ -180,68 +50,20 @@ export default function PermissionsScreen() {
 
           <View className="gap-4 mt-12">
             {PERMISSIONS.map((perm, index) => (
-              <Animated.View
+              <PermissionRow
                 key={perm.key}
-                entering={ZoomIn.delay(800 + index * 100)
-                  .duration(400)
-                  .springify()}
-              >
-                <Pressable
-                  onPress={() =>
-                    handlePermissionPress(perm.key as PermissionKey)
-                  }
-                  disabled={
-                    isRequesting ||
-                    permissionStates[perm.key as PermissionKey] === "granted"
-                  }
-                >
-                  <BlurView
-                    intensity={50}
-                    tint="dark"
-                    className="rounded-3xl overflow-hidden border border-white/15"
-                    style={{
-                      opacity:
-                        permissionStates[perm.key as PermissionKey] ===
-                        "granted"
-                          ? 0.7
-                          : 1,
-                    }}
-                  >
-                    <View className="flex-row items-center p-5 gap-4">
-                      <View
-                        className="size-16 rounded-2xl items-center justify-center"
-                        style={{ backgroundColor: `${COLORS.deepPurple}30` }}
-                      >
-                        <AppText className="text-4xl mt-1">{perm.icon}</AppText>
-                      </View>
-
-                      <View className="flex-1">
-                        <AppText variant="h5">{perm.title}</AppText>
-                        <AppText
-                          variant="body-sm"
-                          color="secondary"
-                          className="mt-1"
-                        >
-                          {perm.desc}
-                        </AppText>
-                      </View>
-
-                      <View
-                        className="size-8 rounded-full items-center justify-center"
-                        style={{
-                          backgroundColor: getPermissionIconBg(
-                            perm.key as PermissionKey,
-                          ),
-                        }}
-                      >
-                        <AppText className="text-base text-white">
-                          {getPermissionIcon(perm.key as PermissionKey)}
-                        </AppText>
-                      </View>
-                    </View>
-                  </BlurView>
-                </Pressable>
-              </Animated.View>
+                title={perm.title}
+                desc={perm.desc}
+                icon={perm.icon}
+                permissionKey={perm.key as PermissionKey}
+                status={permissionStates[perm.key as PermissionKey]}
+                index={index}
+                onPress={handlePermissionPress}
+                disabled={
+                  isRequesting ||
+                  permissionStates[perm.key as PermissionKey] === "granted"
+                }
+              />
             ))}
           </View>
         </View>
@@ -257,6 +79,17 @@ export default function PermissionsScreen() {
           />
         </Animated.View>
       </View>
+
+      <PermissionGuideModal
+        visible={modalVisible}
+        title={modalConfig.title}
+        subtitle={modalConfig.subtitle}
+        description={modalConfig.description}
+        icon={modalConfig.icon}
+        onAction={modalConfig.onAction}
+        actionLabel={modalConfig.actionLabel}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }

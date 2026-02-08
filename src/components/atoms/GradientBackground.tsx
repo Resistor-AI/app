@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ViewProps } from "react-native";
-import { COLORS } from "@/src/constants";
+import { COLORS } from "@/src/constants/colors";
 
 export function GradientBackground({ children, style, ...props }: ViewProps) {
   return (

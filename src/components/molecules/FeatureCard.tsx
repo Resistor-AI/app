@@ -1,15 +1,8 @@
 import { View } from "react-native";
 import { AppText } from "@/src/components/atoms/text";
 import Animated, { FadeIn } from "react-native-reanimated";
-
-interface FeatureCardProps {
-  icon?: string;
-  badge?: string;
-  title: string;
-  subtitle?: string;
-  meta?: string[];
-  delay?: number;
-}
+import { FeatureCardProps } from "@/src/types/components/molecules";
+import { FeatureCardMeta } from "./FeatureCardMeta";
 
 export function FeatureCard({
   icon,
@@ -94,31 +87,7 @@ export function FeatureCard({
         </AppText>
       )}
 
-      {/* Meta pills */}
-      {meta && meta.length > 0 && (
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 8,
-            marginTop: 16,
-            flexWrap: "wrap",
-          }}
-        >
-          {meta.map((item, i) => (
-            <View
-              key={i}
-              style={{
-                backgroundColor: "rgba(0,0,0,0.04)",
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 12,
-              }}
-            >
-              <AppText style={{ fontSize: 13, color: "#555" }}>{item}</AppText>
-            </View>
-          ))}
-        </View>
-      )}
+      {meta && meta.length > 0 && <FeatureCardMeta items={meta} />}
     </Animated.View>
   );
 }

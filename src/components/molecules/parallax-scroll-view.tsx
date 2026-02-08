@@ -1,4 +1,3 @@
-import type { PropsWithChildren, ReactElement } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   interpolate,
@@ -8,21 +7,17 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ThemedView } from "@/src/components/molecules/themed-view";
-import { useColorScheme } from "@/src/lib/hooks/use-color-scheme";
-import { useThemeColor } from "@/src/lib/hooks/use-theme-color";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
+import { useThemeColor } from "@/src/hooks/useThemeColor";
+import { ParallaxScrollViewProps } from "@/src/types/components/molecules";
 
 const HEADER_HEIGHT = 250;
-
-type Props = PropsWithChildren<{
-  headerImage: ReactElement;
-  headerBackgroundColor: { dark: string; light: string };
-}>;
 
 export default function ParallaxScrollView({
   children,
   headerImage,
   headerBackgroundColor,
-}: Props) {
+}: ParallaxScrollViewProps) {
   const backgroundColor = useThemeColor({}, "background");
   const colorScheme = useColorScheme() ?? "light";
   const scrollRef = useAnimatedRef<Animated.ScrollView>();

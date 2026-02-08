@@ -2,29 +2,7 @@ import { View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
 import { twMerge } from "tailwind-merge";
-
-// Explicit class mappings for Tailwind to detect at build time
-const ACCENT_COLORS = {
-  textPrimary: "text-textPrimary",
-  electricBlue: "text-electricBlue",
-  amberLight: "text-amberLight",
-  successGreen: "text-successGreen",
-  deepPurple: "text-deepPurple",
-  neonRed: "text-neonRed",
-} as const;
-
-export interface OnboardingHeaderProps {
-  /** First line of header (primary color) */
-  title: string;
-  /** Second line of header (accent color) */
-  subtitle?: string;
-  /** Color for subtitle - uses Tailwind config colors */
-  accentColor?: keyof typeof ACCENT_COLORS;
-  /** Animation delay offset in ms */
-  animationDelay?: number;
-
-  className?: string;
-}
+import { OnboardingHeaderProps, ACCENT_COLORS } from "@/src/types/Onboarding/components";
 
 /**
  * OnboardingHeader - Two-line header with accent color for onboarding screens
@@ -35,6 +13,7 @@ export function OnboardingHeader({
   accentColor = "electricBlue",
   animationDelay = 200,
   className,
+  subTitleClassName,
 }: OnboardingHeaderProps) {
   const accentColorClass = ACCENT_COLORS[accentColor];
 
@@ -56,7 +35,7 @@ export function OnboardingHeader({
             .duration(800)
             .springify()}
         >
-          <AppText variant="display" className={twMerge(accentColorClass)}>
+          <AppText variant="display" className={twMerge(accentColorClass, subTitleClassName)}>
             {subtitle}
           </AppText>
         </Animated.View>

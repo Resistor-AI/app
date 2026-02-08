@@ -3,12 +3,10 @@ import { View, useWindowDimensions } from "react-native";
 import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import {
-  OnboardingHeader,
-  OnboardingSubtext,
-  OnboardingButton,
-  OnboardingStepper,
-} from "./components";
+import { OnboardingHeader } from "./components/OnboardingHeader";
+import { OnboardingSubtext } from "./components/OnboardingSubtext";
+import { OnboardingButton } from "./components/OnboardingButton";
+import { OnboardingStepper } from "./components/OnboardingStepper";
 
 export default function ProblemScreen() {
   const router = useRouter();
@@ -25,7 +23,7 @@ export default function ProblemScreen() {
 
       {/* Top Section */}
       <View className="px-7">
-        <OnboardingStepper totalSteps={4} currentStep={1} />
+        <OnboardingStepper totalSteps={6} currentStep={1} />
       </View>
 
       {/* Main Content */}
@@ -39,7 +37,7 @@ export default function ProblemScreen() {
           />
 
           <OnboardingSubtext
-            animationDelay={900}
+            animationDelay={500}
             emphasis="You need a system that fights back."
           >
             Willpower alone can't fight a billion-dollar attention economy.
@@ -48,7 +46,7 @@ export default function ProblemScreen() {
 
         {/* Bottom Section */}
         <Animated.View
-          entering={FadeInUp.delay(1300).duration(400).springify()}
+          entering={FadeInUp.delay(800).duration(400).springify()}
           className="gap-5"
         >
           <OnboardingButton

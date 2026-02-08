@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, View, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,34 +7,16 @@ import Animated, {
 import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
-
-type ButtonVariant = "blue" | "amber" | "green" | "purple";
-
-const VARIANT_COLORS: Record<ButtonVariant, { bg: string; text: string }> = {
-  blue: { bg: "#0A84FF", text: "text-textPrimary" }, // electricBlue
-  amber: { bg: "#F59E0B", text: "text-background" }, // amber
-  green: { bg: "#30D158", text: "text-background" }, // successGreen
-  purple: { bg: "#5E5CE6", text: "text-textPrimary" }, // deepPurple
-};
-
-export interface OnboardingButtonProps extends Omit<PressableProps, "style"> {
-  /** Button text */
-  label: string;
-  /** Color variant */
-  variant?: ButtonVariant;
-  /** Show arrow indicator */
-  showArrow?: boolean;
-  /** Optional className overrides */
-  className?: string;
-}
+import { OnboardingButtonProps, VARIANT_COLORS } from "@/src/types/Onboarding/components";
 
 /**
  * OnboardingButton - Primary CTA button for onboarding screens
  */
 export function OnboardingButton({
   label,
-  variant = "blue",
+  variant = "white",
   showArrow = true,
+  leftIcon,
   className,
   onPress,
   ...rest
@@ -71,8 +53,15 @@ export function OnboardingButton({
       {...rest}
     >
       <Animated.View
-        style={[styles.container, { backgroundColor: bg }, animatedStyle]}
+        style={[
+          styles.container,
+          { backgroundColor: bg, marginTop: 32 },
+          animatedStyle,
+          // Allow overriding via style prop (e.g. for removing margin)
+          rest.style as any,
+        ]}
       >
+        {leftIcon}
         <AppText
           variant="body-lg"
           className={twMerge("font-outfit-semibold", text)}
@@ -98,6 +87,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 9999, // full
     gap: 12, // gap-3 (3 * 4 = 12px)
-    marginTop: 32, // mt-8 (8 * 4 = 32px)
   },
 });

@@ -34,6 +34,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
@@ -45,3 +46,9 @@ app-example
 /ios
 /android
 
+android/local.properties
+
+# Social Media Content
+social-content/
+.agents/
+.claude/

@@ -1,10 +1,50 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect } from "react";
+import * as SystemUI from "expo-system-ui";
 import RootNav from "./RootNav";
-import { AuthProvider } from "@/src/lib/auth-context";
+import { COLORS } from "@/src/constants/colors";
+import { useAuthListener } from "@/src/hooks/auth/useAuthListener";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 5_000,
+      gcTime: 2 * 60 * 1000,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+    },
+  },
+});
+
+const ResistorTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: COLORS.background,
+    card: COLORS.surface,
+    text: COLORS.textPrimary,
+    border: COLORS.surfaceHighlight,
+    notification: COLORS.electricBlue,
+  },
+};
 
 export default function RootLayout() {
+  useAuthListener();
+
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(COLORS.background);
+  }, []);
+
   return (
-    <AuthProvider>
-      <RootNav />
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={ResistorTheme}>
+          <RootNav />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
