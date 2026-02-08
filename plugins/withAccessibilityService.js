@@ -30,7 +30,8 @@ const withAccessibilityServiceManifest = (config) => {
         $: {
           "android:name": serviceName,
           "android:permission": "android.permission.BIND_ACCESSIBILITY_SERVICE",
-          "android:exported": "false", // Important for security
+          "android:exported": "false",
+          "android:stopWithTask": "false",
           "android:label": "@string/accessibility_service_label",
           "android:description": "@string/accessibility_service_description",
         },

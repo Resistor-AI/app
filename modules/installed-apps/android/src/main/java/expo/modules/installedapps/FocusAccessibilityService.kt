@@ -4,11 +4,28 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
 
 class FocusAccessibilityService : AccessibilityService() {
+
+    companion object {
+        @Volatile
+        var isRunning = false
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        isRunning = true
+        Log.d("FocusService", "Service connected and running")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isRunning = false
+        Log.d("FocusService", "Service destroyed")
+    }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null || event.packageName == null) return
@@ -48,17 +65,24 @@ class FocusAccessibilityService : AccessibilityService() {
             }
 
             // --- BLOCK ACTION ---
+            val count = prefs.getInt("distraction_count", 0)
+            prefs.edit().putInt("distraction_count", count + 1).apply()
             Log.d("FocusService", "Blocking $openedApp (Session Active & Not Snoozed)")
-            
+
             try {
-                // IMPORTANT: Ensure this matches your package name in android/app/build.gradle
-                // It is likely 'com.pragmaticaweds.resistorai' based on your previous errors
-                val intent = Intent(this, Class.forName("com.pragmaticaweds.resistorai.BlockActivity")) 
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                intent.putExtra("blocked_package", openedApp)
+                // Use dev scheme in debug, production scheme in release
+                val isDebug = (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+                val scheme = if (isDebug) "exp+resistor-ai" else "resistorai"
+                val deepLinkUri = Uri.parse("$scheme:///block?package=$openedApp")
+                val intent = Intent(Intent.ACTION_VIEW, deepLinkUri)
+                intent.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
                 startActivity(intent)
             } catch (e: Exception) {
-                Log.e("FocusService", "Failed to launch BlockActivity", e)
+                Log.e("FocusService", "Failed to launch block screen", e)
                 performGlobalAction(GLOBAL_ACTION_HOME)
             }
         }

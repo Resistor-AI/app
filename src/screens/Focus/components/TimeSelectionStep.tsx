@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { BlurView } from "expo-blur";
 import { Zap } from "lucide-react-native";
 import { StepBadge } from "@/src/components/atoms/StepBadge";
-import { TimeSelectionStepProps } from "@/src/types/Focus";
+import { TimeSelectionStepProps } from "@/src/types/Focus/SessionSetup";
 import { TimePicker } from "./TimePicker";
 import { DurationDisplay } from "./DurationDisplay";
 import { TimeValidationError } from "./TimeValidationError";
@@ -11,20 +11,20 @@ import { TimeValidationError } from "./TimeValidationError";
 export const TimeSelectionStep = memo(function TimeSelectionStep({
   startTime,
   endTime,
-  onStartTimeChange,
+  isFormValid,
+  durationText,
   onEndTimeChange,
   isStartTimeValid,
   isValidTimeRange,
-  isFormValid,
-  durationText,
+  onStartTimeChange,
   formatTimeDisplay,
 }: TimeSelectionStepProps) {
   return (
     <View>
       <StepBadge
-        icon={<Zap size={14} color="#3b82f6" fill="#3b82f6" />}
+        icon={<Zap size={14} color="#ffffff" fill="#ffffff" />}
         label="Set Your Focus Period"
-        variant="blue"
+        variant="white"
         className="mt-4 mb-8"
       />
 

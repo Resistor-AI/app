@@ -52,3 +52,13 @@ export interface ListItemAnimationOptions {
   type?: AnimationType;
   duration?: number;
 }
+
+export interface AnimatedProgressBarProps {
+  progress: number;
+  height?: number;
+  trackColor?: string;
+  fillColor?: string;
+  borderRadius?: number;
+  duration?: number;
+  style?: import("react-native").ViewStyle;
+}

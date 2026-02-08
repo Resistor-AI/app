@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
-import { PERMISSIONS } from "@/src/constants";
+import { PERMISSIONS } from "@/src/constants/data";
 import { OnboardingHeader } from "./components/OnboardingHeader";
 import { OnboardingButton } from "./components/OnboardingButton";
 import { OnboardingSubtext } from "./components/OnboardingSubtext";

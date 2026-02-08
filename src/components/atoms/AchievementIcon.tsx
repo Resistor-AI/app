@@ -1,15 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeIn, ZoomIn } from "react-native-reanimated";
 import { AppText } from "./text";
-
-type IconVariant = "red" | "blue" | "purple" | "green" | "orange" | "pink";
-
-interface AchievementIconProps {
-  icon: string;
-  variant?: IconVariant;
-  size?: "sm" | "md" | "lg";
-  delay?: number;
-}
+import { IconVariant, AchievementIconProps } from "@/src/types/components/atoms";
 
 const GRADIENT_COLORS: Record<IconVariant, [string, string]> = {
   red: ["#FF6B6B", "#EE5A52"],

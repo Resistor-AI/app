@@ -9,6 +9,7 @@ export default function ProtectedLayout() {
       <Stack.Screen name="squad" />
       <Stack.Screen name="focus" />
       <Stack.Screen name="focus-setup" />
+      <Stack.Screen name="session-complete" />
       <Stack.Screen name="break" />
     </Stack>
   );

@@ -34,8 +34,20 @@ export function snoozeApp(packageName: string, durationMinutes: number): void {
   return InstalledAppsModule.snoozeApp(packageName, durationMinutes);
 }
 
+export function launchApp(packageName: string): boolean {
+  return InstalledAppsModule.launchApp(packageName);
+}
+
 export function getBlockedApps(): string[] {
   return InstalledAppsModule.getBlockedApps();
+}
+
+export function getDistractionCount(): number {
+  return InstalledAppsModule.getDistractionCount();
+}
+
+export function resetDistractionCount(): void {
+  return InstalledAppsModule.resetDistractionCount();
 }
 
 export interface PermissionStatus {

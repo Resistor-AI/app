@@ -1,12 +1,7 @@
-import { View, ViewProps } from "react-native";
+import { View } from "react-native";
 import { BlurView } from "expo-blur";
 import { twMerge } from "tailwind-merge";
-
-interface GlassCardProps extends ViewProps {
-  intensity?: number;
-  className?: string;
-  variant?: "light" | "dark";
-}
+import { GlassCardProps } from "@/src/types/components/molecules";
 
 export function GlassCard({
   children,

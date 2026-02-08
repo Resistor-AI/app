@@ -1,6 +1,6 @@
 import { Stack, SplashScreen } from "expo-router";
 import "../src/global.css";
-import { COLORS } from "@/src/constants";
+import { COLORS } from "@/src/constants/colors";
 import {
   useFonts,
   Inter_400Regular,
@@ -59,6 +59,7 @@ export default function RootNav() {
       }}
     >
       <Stack.Screen name="(app)" />
+      <Stack.Screen name="block" options={{ animation: "none" }} />
     </Stack>
   );
 }

@@ -13,7 +13,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Base64
 import android.provider.Settings
-import android.app.NotificationManager 
+import android.app.NotificationManager
 import java.io.ByteArrayOutputStream
 
 class InstalledAppsModule : Module() {
@@ -136,25 +136,32 @@ class InstalledAppsModule : Module() {
     // --- 6. Check Permissions ---
     Function("checkPermissions") {
         val context = appContext.reactContext
-        
+
         if (context == null) {
-            return@Function mapOf("accessibility" to false, "notifications" to false)
+            return@Function mapOf(
+                "accessibility" to false,
+                "accessibilityRunning" to false,
+                "notifications" to false
+            )
         }
-        
-        // A. Accessibility Check
+
+        // A. Accessibility enabled check
         val enabledServices = Settings.Secure.getString(
             context.contentResolver,
             Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
         ) ?: ""
-        
         val accessibilityEnabled = enabledServices.contains("FocusAccessibilityService")
 
-        // B. Notification Check
+        // B. Accessibility actually running check (static flag set by the service)
+        val accessibilityRunning = FocusAccessibilityService.isRunning
+
+        // C. Notification Check
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationEnabled = notificationManager.areNotificationsEnabled()
 
         return@Function mapOf(
             "accessibility" to accessibilityEnabled,
+            "accessibilityRunning" to accessibilityRunning,
             "notifications" to notificationEnabled
         )
     }
@@ -186,7 +193,35 @@ class InstalledAppsModule : Module() {
         getAppIconBase64(packageName)
     }
 
-    // --- 9. Get Blocked Apps ---
+    // --- 9. Get Distraction Count ---
+    Function("getDistractionCount") {
+        val context = appContext.reactContext ?: return@Function 0
+        val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+        return@Function prefs.getInt("distraction_count", 0)
+    }
+
+    // --- 10. Reset Distraction Count ---
+    Function("resetDistractionCount") {
+        val context = appContext.reactContext
+        if (context != null) {
+            val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)
+            prefs.edit().putInt("distraction_count", 0).apply()
+        }
+    }
+
+    // --- 11. Launch App ---
+    Function("launchApp") { packageName: String ->
+        val context = appContext.reactContext ?: return@Function false
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+            return@Function true
+        }
+        return@Function false
+    }
+
+    // --- 12. Get Blocked Apps ---
     Function("getBlockedApps") {
         val context = appContext.reactContext ?: return@Function emptyList<String>()
         val prefs = context.getSharedPreferences("ResistorPrefs", Context.MODE_PRIVATE)

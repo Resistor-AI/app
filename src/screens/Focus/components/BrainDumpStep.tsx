@@ -4,7 +4,7 @@ import { BlurView } from "expo-blur";
 import { Zap, Clock } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 import { StepBadge } from "@/src/components/atoms/StepBadge";
-import { BrainDumpStepProps } from "@/src/types/Focus";
+import { BrainDumpStepProps } from "@/src/types/Focus/SessionSetup";
 
 export const BrainDumpStep = memo(function BrainDumpStep({
   brainDump,
@@ -15,9 +15,9 @@ export const BrainDumpStep = memo(function BrainDumpStep({
   return (
     <View>
       <StepBadge
-        icon={<Zap size={14} color="#f59e0b" fill="#f59e0b" />}
+        icon={<Zap size={14} color="#ffffff" fill="#ffffff" />}
         label="Plan Your Focus"
-        variant="amber"
+        variant="white"
         className="mt-4 mb-8"
       />
 
@@ -38,7 +38,7 @@ export const BrainDumpStep = memo(function BrainDumpStep({
       </View>
 
       {/* Text Input Card */}
-      <View className="overflow-hidden rounded-3xl border border-amber-500/20 mb-4">
+      <View className="overflow-hidden rounded-3xl border border-white/20 mb-4">
         <BlurView intensity={30} tint="dark" style={{ padding: 4 }}>
           <View className="bg-white/5 rounded-2xl p-4">
             <TextInput
@@ -47,8 +47,8 @@ export const BrainDumpStep = memo(function BrainDumpStep({
               onChangeText={onBrainDumpChange}
               placeholder="Finish my report (urgent), reply to emails, prepare for tomorrow's meeting (important), read chapter 5 if time permits..."
               placeholderTextColor="#71717a"
-              cursorColor="#f59e0b"
-              selectionColor="#f59e0b50"
+              cursorColor="#ffffff"
+              selectionColor="#ffffff50"
               className="text-base text-white min-h-[150px]"
               textAlignVertical="top"
               autoFocus

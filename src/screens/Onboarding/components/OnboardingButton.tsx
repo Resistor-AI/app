@@ -14,8 +14,9 @@ import { OnboardingButtonProps, VARIANT_COLORS } from "@/src/types/Onboarding/co
  */
 export function OnboardingButton({
   label,
-  variant = "blue",
+  variant = "white",
   showArrow = true,
+  leftIcon,
   className,
   onPress,
   ...rest
@@ -60,6 +61,7 @@ export function OnboardingButton({
           rest.style as any,
         ]}
       >
+        {leftIcon}
         <AppText
           variant="body-lg"
           className={twMerge("font-outfit-semibold", text)}

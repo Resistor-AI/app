@@ -1,4 +1,4 @@
-import { PermissionStatus } from "@/src/constants";
+import { PermissionStatus } from "@/src/types/common";
 
 export type PermissionKey = "notifications" | "accessibility";
 export type PermissionStates = Record<PermissionKey, PermissionStatus>;
@@ -33,3 +33,5 @@ export interface PermissionRowProps {
   onPress: (key: PermissionKey) => void;
   disabled: boolean;
 }
+
+export type PermissionGuideContentProps = Omit<PermissionGuideModalProps, "visible">;

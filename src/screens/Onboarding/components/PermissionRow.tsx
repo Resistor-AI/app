@@ -2,7 +2,7 @@ import { View, Pressable } from "react-native";
 import { BlurView } from "expo-blur";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
-import { COLORS } from "@/src/constants";
+import { COLORS } from "@/src/constants/colors";
 import { PermissionRowProps } from "@/src/types/Onboarding/PermissionsScreen";
 
 export function PermissionRow({

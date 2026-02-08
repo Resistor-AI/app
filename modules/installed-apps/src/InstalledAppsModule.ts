@@ -73,8 +73,20 @@ interface InstalledAppsModuleType {
    */
   checkPermissions(): Promise<{
     accessibility: boolean;
+    accessibilityRunning: boolean;
     notifications: boolean;
   }>;
+
+  getDistractionCount(): number;
+
+  resetDistractionCount(): void;
+
+  /**
+   * Launch an app by package name
+   * @param packageName - The package name to launch
+   * @returns true if launched successfully
+   */
+  launchApp(packageName: string): boolean;
 
   getBlockedApps(): string[];
 

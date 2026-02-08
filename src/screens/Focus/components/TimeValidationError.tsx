@@ -2,7 +2,7 @@ import { memo } from "react";
 import { View } from "react-native";
 import { AlertCircle } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
-import { TimeValidationErrorProps } from "@/src/types/Focus";
+import { TimeValidationErrorProps } from "@/src/types/Focus/SessionSetup";
 
 export const TimeValidationError = memo(function TimeValidationError({
   message,

@@ -10,12 +10,12 @@ import Animated, {
 
 import { AppText } from "@/src/components/atoms/text";
 import { RollingTextProps } from "@/src/types/Auth/components";
+import { ROLLING_WORDS } from "@/src/constants/data";
 
-const WORDS = ["Focus", "Energy", "Life", "Brain", "Work"];
 const CYCLE_DURATION = 2000; // ms per word
 
 export function RollingText({
-  words = WORDS,
+  words = ROLLING_WORDS as unknown as string[],
   prefix = "Reclaim Your",
   accentColor = "#0A84FF",
 }: RollingTextProps) {

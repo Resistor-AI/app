@@ -40,16 +40,7 @@ const colorClasses = {
   blue: "text-electricBlue",
 } as const;
 
-export type TextVariant = keyof typeof variantClasses;
-export type TextColor = keyof typeof colorClasses;
-
-export interface TextProps extends React.ComponentProps<typeof RNText> {
-  content?: string;
-  center?: boolean;
-  color?: TextColor;
-  className?: string;
-  variant?: TextVariant;
-}
+import { TextProps } from "@/src/types/components/atoms";
 
 /**
  * AppText - Reusable text component using Tailwind CSS classes.

@@ -46,7 +46,7 @@ export const PERMISSIONS = [
   },
 ] as const;
 
-export type PermissionStatus = "pending" | "granted" | "denied";
+
 
 export const USER_ROLES = [
   { id: "student", icon: "📚", label: "Student" },
@@ -55,6 +55,12 @@ export const USER_ROLES = [
   { id: "creator", icon: "🎨", label: "Creator" },
 ] as const;
 
-export type Pillar = (typeof PILLARS)[number];
-export type Permission = (typeof PERMISSIONS)[number];
-export type UserRole = (typeof USER_ROLES)[number];
+export const ROLES = ["Student", "Professional", "Entrepreneur", "Creative", "Developer", "Other"] as const;
+
+export const ROLLING_WORDS = ["Focus", "Energy", "Life", "Brain", "Work"] as const;
+
+export const NOTIFICATION_BULLET_POINTS: string[] = [
+  "Remind you to maintain your focus streaks",
+  "Alert you when the Shield blocks apps",
+  "Keep you accountable to your daily goals",
+];

@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { View, Switch, Image } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { AppText } from "@/src/components/atoms/text";
-import { COLORS } from "@/src/constants";
+import { COLORS } from "@/src/constants/colors";
 import { useAppIcon } from "@/src/hooks/useInstalledApps";
 import { SelectableAppItemProps } from "@/src/types/Onboarding/AppSelectionScreen";
 

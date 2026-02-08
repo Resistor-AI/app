@@ -25,22 +25,21 @@ export interface OnboardingHeaderProps {
   subTitleClassName?: string;
 }
 
-export type ButtonVariant = "blue" | "amber" | "green" | "purple";
+export type ButtonVariant = "blue" | "amber" | "green" | "purple" | "white";
 
 export const VARIANT_COLORS: Record<ButtonVariant, { bg: string; text: string }> = {
-  blue: { bg: "#0A84FF", text: "text-textPrimary" }, // electricBlue
-  amber: { bg: "#F59E0B", text: "text-background" }, // amber
-  green: { bg: "#30D158", text: "text-background" }, // successGreen
-  purple: { bg: "#5E5CE6", text: "text-textPrimary" }, // deepPurple
+  blue: { bg: "#0A84FF", text: "text-textPrimary" },
+  amber: { bg: "#F59E0B", text: "text-background" },
+  green: { bg: "#30D158", text: "text-background" },
+  purple: { bg: "#5E5CE6", text: "text-textPrimary" },
+  white: { bg: "#ffffff", text: "text-background" },
 };
 
 export interface OnboardingButtonProps extends PressableProps {
-  /** Button text */
   label: string;
-  /** Color variant */
   variant?: ButtonVariant;
-  /** Show arrow indicator */
   showArrow?: boolean;
+  leftIcon?: import("react").ReactNode;
 }
 
 export interface OnboardingStepperProps {
@@ -57,4 +56,9 @@ export interface OnboardingSubtextProps {
   animationDelay?: number;
 
   className?: string;
+}
+
+export interface RoleSelectorProps {
+  selectedRole: string;
+  onSelect: (role: string) => void;
 }

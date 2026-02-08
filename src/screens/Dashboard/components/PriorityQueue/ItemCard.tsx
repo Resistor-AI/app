@@ -3,12 +3,8 @@ import { memo } from "react";
 import Animated from "react-native-reanimated";
 import { Hourglass } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
-import { ItemCardProps } from "@/src/types/Dashboard";
-import { useStaggeredEntry } from "@/src/hooks/animations";
-
-interface ExtendedItemCardProps extends ItemCardProps {
-  index?: number;
-}
+import { useStaggeredEntry } from "@/src/hooks/animations/useStaggeredEntry";
+import { ExtendedItemCardProps } from "@/src/types/Dashboard/PriorityQueue";
 
 export const ItemCard = memo(function ItemCard({
   item,

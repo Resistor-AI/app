@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { BlurView } from "expo-blur";
 import { ChevronRight } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
-import { DurationDisplayProps } from "@/src/types/Focus";
+import { DurationDisplayProps } from "@/src/types/Focus/SessionSetup";
 
 export const DurationDisplay = memo(function DurationDisplay({
   durationText,

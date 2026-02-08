@@ -3,10 +3,8 @@ import { useEffect, useState, memo } from "react";
 import Animated from "react-native-reanimated";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
 import { AppText } from "@/src/components/atoms/text";
-import {
-  usePulseAnimation,
-  useStaggeredEntry,
-} from "@/src/hooks/animations";
+import { usePulseAnimation } from "@/src/hooks/animations/usePulseAnimation";
+import { useStaggeredEntry } from "@/src/hooks/animations/useStaggeredEntry";
 
 export const DashboardHeader = memo(function DashboardHeader() {
   const { name } = useOnboardingStore();
@@ -20,16 +18,9 @@ export const DashboardHeader = memo(function DashboardHeader() {
     maxOpacity: 1,
   });
 
-  // Staggered entry animations
-  const { animatedStyle: pillStyle } = useStaggeredEntry({
+  // Entry animation for the single row
+  const { animatedStyle: rowStyle } = useStaggeredEntry({
     index: 0,
-    staggerDelay: 100,
-    duration: 500,
-    translateY: 10,
-  });
-
-  const { animatedStyle: greetingStyle } = useStaggeredEntry({
-    index: 1,
     staggerDelay: 100,
     duration: 500,
     translateY: 10,
@@ -64,31 +55,23 @@ export const DashboardHeader = memo(function DashboardHeader() {
   });
 
   return (
-    <View className="px-6 pt-8 pb-6">
-      <Animated.View
-        style={pillStyle}
-        className="flex-row items-center justify-between mb-2"
-      >
-        {/* Date & Time pill */}
-        <View className="flex-row items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-          <Animated.View
-            style={pulseStyle}
-            className="h-1.5 w-1.5 rounded-full bg-electricBlue shadow-[0_0_8px_rgba(59,130,246,0.8)]"
-          />
-          <AppText className="text-zinc-400 text-[11px] font-bold tracking-widest uppercase font-mono">
-            {formattedDate} • {formattedTime}
-          </AppText>
-        </View>
-      </Animated.View>
-
-      <Animated.View style={greetingStyle}>
-        <AppText className="text-3xl text-white font-semibold tracking-tight leading-10">
-          {getGreeting()},{" "}
-          <AppText className="text-zinc-500 text-3xl font-semibold">
-            {name || "Guest"}.
-          </AppText>
+    <Animated.View style={rowStyle} className="px-6 pt-8 pb-5 flex-row items-center gap-4">
+      <AppText numberOfLines={1} className="flex-1 text-xl text-white font-semibold tracking-tight">
+        {getGreeting()},{" "}
+        <AppText className="text-zinc-500 text-xl font-semibold">
+          {name || "Guest"}.
         </AppText>
-      </Animated.View>
-    </View>
+      </AppText>
+
+      <View className="flex-row items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5 shrink-0">
+        <Animated.View
+          style={pulseStyle}
+          className="h-1.5 w-1.5 rounded-full bg-electricBlue shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+        />
+        <AppText className="text-zinc-400 text-[11px] font-bold tracking-widest uppercase font-mono">
+          {formattedDate} • {formattedTime}
+        </AppText>
+      </View>
+    </Animated.View>
   );
 });

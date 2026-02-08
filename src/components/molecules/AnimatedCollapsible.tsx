@@ -12,8 +12,8 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
-import { useReducedMotion } from "@/src/hooks/animations";
-import { AnimatedCollapsibleProps } from "@/src/types/Focus";
+import { useReducedMotion } from "@/src/hooks/animations/useAnimationConfig";
+import { AnimatedCollapsibleProps } from "@/src/types/Focus/SessionSetup";
 
 const ANIMATION_DURATION = 300;
 

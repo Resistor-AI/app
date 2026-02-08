@@ -9,6 +9,7 @@ const VARIANT_COLORS: Record<StepBadgeVariant, string> = {
   green: "#22c55e",
   red: "#ef4444",
   purple: "#a855f7",
+  white: "#ffffff",
 };
 
 export const StepBadge = memo(function StepBadge({

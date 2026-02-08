@@ -4,7 +4,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import * as SystemUI from "expo-system-ui";
 import RootNav from "./RootNav";
-import { COLORS } from "@/src/constants";
+import { COLORS } from "@/src/constants/colors";
+import { useAuthListener } from "@/src/hooks/auth/useAuthListener";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,8 +32,9 @@ const ResistorTheme = {
 };
 
 export default function RootLayout() {
+  useAuthListener();
+
   useEffect(() => {
-    // Set the root view background color to prevent white flash on load
     SystemUI.setBackgroundColorAsync(COLORS.background);
   }, []);
 

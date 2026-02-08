@@ -6,6 +6,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { FloatingActionButtonProps } from "@/src/types/Dashboard";
@@ -25,9 +26,9 @@ export const FloatingActionButton = memo(function FloatingActionButton({
     })
     .onEnd(() => {
       if (hapticFeedback) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Medium);
       }
-      onPress();
+      runOnJS(onPress)();
     });
 
   const animatedStyle = useAnimatedStyle(() => ({

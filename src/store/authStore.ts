@@ -1,20 +1,23 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { zustandStorage } from "./storage";
+import { supabase } from "@/src/lib/supabase/client";
 import { AuthState } from "@/src/types/store";
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      isAuthenticated: false,
-      user: null,
+export const useAuthStore = create<AuthState>()((set) => ({
+  isAuthenticated: false,
+  user: null,
+  session: null,
+  isLoading: true,
 
-      login: (userData) => set({ isAuthenticated: true, user: userData || { id: "mock-user-id" } }),
-      logout: () => set({ isAuthenticated: false, user: null }),
+  setSession: (session) =>
+    set({
+      session,
+      user: session?.user ?? null,
+      isAuthenticated: !!session?.user,
+      isLoading: false,
     }),
-    {
-      name: "auth-storage",
-      storage: createJSONStorage(() => zustandStorage),
-    }
-  )
-);
+
+  logout: async () => {
+    await supabase.auth.signOut();
+    set({ session: null, user: null, isAuthenticated: false });
+  },
+}));

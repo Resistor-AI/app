@@ -32,7 +32,7 @@ export function useProgressAnimation(options: ProgressAnimationOptions) {
     } else {
       animatedProgress.value = withTiming(progress, {
         duration,
-        easing: Easing.out(Easing.ease),
+        easing: Easing.linear,
       });
     }
 
