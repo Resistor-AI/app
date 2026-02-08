@@ -1,4 +1,4 @@
-# Resistor AI: The AI-Powered Digital Coach for Sustainable Productivity
+# Resistor AI: The AI Productivity for Sustainable Focus while eliminating distraction, and preventing burnout
 
 > [!NOTE]
 > **Built for the Comet AI Evaluation Hackathon**
