@@ -1,11 +1,37 @@
 import { View, TextInput, Pressable } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { AppText } from "@/src/components/atoms/text";
-import { StarRating } from "./StarRating";
 import { useScheduleFeedback } from "@/src/hooks/focus/useScheduleFeedback";
-import { ScheduleFeedbackCardProps } from "@/src/types/Focus/ScheduleFeedback";
-import { FeedbackRating } from "@/src/types/Focus/ScheduleFeedback";
+import { ScheduleFeedbackCardProps, StarRatingProps, FeedbackRating } from "@/src/types/Focus/ScheduleFeedback";
+
+function StarRating({ rating, onRate, disabled }: StarRatingProps) {
+  const handlePress = (value: FeedbackRating) => {
+    if (disabled) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onRate(value);
+  };
+
+  return (
+    <View className="flex-row gap-2 justify-center">
+      {([1, 2, 3, 4, 5] as FeedbackRating[]).map((star) => (
+        <Pressable
+          key={star}
+          onPress={() => handlePress(star)}
+          disabled={disabled}
+          hitSlop={8}
+        >
+          <Ionicons
+            name={star <= rating ? "star" : "star-outline"}
+            size={32}
+            color={star <= rating ? "#F59E0B" : "#ffffff40"}
+          />
+        </Pressable>
+      ))}
+    </View>
+  );
+}
 
 export function ScheduleFeedbackCard({ traceId }: ScheduleFeedbackCardProps) {
   const feedback = useScheduleFeedback(traceId);

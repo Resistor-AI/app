@@ -1,13 +1,42 @@
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { Clock } from "lucide-react-native";
 import { AppText } from "@/src/components/atoms/text";
 import { RING_SIZE } from "./TimerRingConstants";
-import { TimeDisplay } from "./TimeDisplay";
-import { TimerRingContentProps } from "@/src/types/Focus/TimerRing";
+import { TimerRingContentProps, TimeDisplayProps } from "@/src/types/Focus/TimerRing";
 
 const formatEndTime = (date: Date) => {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 };
+
+function TimeDisplay({ minutes, seconds, colonStyle, theme }: TimeDisplayProps) {
+  return (
+    <View className="flex-row items-center">
+      <AppText
+        className="text-[72px] font-extrabold text-white tracking-tight"
+        style={{ fontVariant: ["tabular-nums"], includeFontPadding: false }}
+      >
+        {String(minutes).padStart(2, "0")}
+      </AppText>
+
+      <Animated.View style={colonStyle}>
+        <AppText
+          className="text-[58px] font-extrabold mx-0.5 -mt-0.5"
+          style={{ color: theme.primary }}
+        >
+          :
+        </AppText>
+      </Animated.View>
+
+      <AppText
+        className="text-[72px] font-extrabold text-white tracking-tight"
+        style={{ fontVariant: ["tabular-nums"], includeFontPadding: false }}
+      >
+        {String(seconds).padStart(2, "0")}
+      </AppText>
+    </View>
+  );
+}
 
 export function TimerRingContent({
   minutes,

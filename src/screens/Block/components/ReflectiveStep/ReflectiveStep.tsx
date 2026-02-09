@@ -1,10 +1,29 @@
 import { useEffect } from "react";
-import { View, TextInput } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { AppText } from "@/src/components/atoms/text";
 import { useReflectiveStatement } from "@/src/hooks/block/useReflectiveStatement";
-import { ReflectiveStepProps } from "@/src/types/Block/components";
+import { ReflectiveStepProps, StatementDisplayProps } from "@/src/types/Block/components";
 import { COLORS } from "@/src/constants/colors";
-import { StatementDisplay } from "./StatementDisplay";
+
+function StatementDisplay({ targetText, typedText }: StatementDisplayProps) {
+  const typedLength = typedText.length;
+
+  return (
+    <Text className="text-xl leading-8">
+      {targetText.split("").map((char, i) => (
+        <Text
+          key={i}
+          style={{
+            color: i < typedLength ? COLORS.textPrimary : COLORS.textTertiary,
+            fontWeight: i < typedLength ? "500" : "400",
+          }}
+        >
+          {char}
+        </Text>
+      ))}
+    </Text>
+  );
+}
 
 function ProgressBar({ progress }: { progress: number }) {
   return (
